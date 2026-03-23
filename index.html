@@ -72,7 +72,8 @@
     .perc-table th:nth-child(3), .perc-table td:nth-child(3) { width: 20%; }
 
     /* --- Guest Filter Chips --- */
-    .filter-chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0 5px 0; }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0 5px 0; justify-content: center; }
+    #recordCount { text-align: center; font-weight: bold; color: #2c3e50; font-size: 1em; margin: 8px 0 10px 0; min-height: 1.4em; }
     .filter-chip { padding: 8px 18px; border-radius: 20px; border: 2px solid #27ae60; background: white; color: #27ae60; font-weight: bold; font-size: 0.9em; cursor: pointer; transition: 0.2s; }
     .filter-chip:hover { background: #27ae60; color: white; }
     .filter-chip.active { background: #1a7a44; border-color: #1a7a44; color: white; }
@@ -475,7 +476,8 @@
                  <button class="filter-chip ${activeGuestFilter==='room'?'active':''}" onclick="applyGuestFilter('room')">🛏️ Only Room</button>
                  <button class="filter-chip ${activeGuestFilter==='both'?'active':''}" onclick="applyGuestFilter('both')">🍴🛏️ Both</button>
                  <button class="filter-chip ${activeGuestFilter==='zero'?'active':''}" onclick="applyGuestFilter('zero')">🚫 Zero Payment</button>
-               </div>`;
+               </div>
+               <div id="recordCount"></div>`;
                
     } else if (currentTab === 'expenses') {
       let methTotal = Object.values(d.byMethod).reduce((sum, val) => sum + val, 0);
@@ -567,6 +569,10 @@
     let sizeVal = document.getElementById('pageSize').value; 
     let totalPages = Math.ceil(filteredData.length / perPage) || 1;
     let prevBtn = document.getElementById('prevB'); let nextBtn = document.getElementById('nextB'); let pageText = document.getElementById('pageTxt');
+
+    // Record count uppar dikhao
+    let rcEl = document.getElementById('recordCount');
+    if (rcEl) rcEl.innerHTML = `📋 Total Records: <span style="color:#2980b9; font-size:1.15em;">${filteredData.length}</span>`;
 
     if (sizeVal === 'all') { 
       pageText.innerText = `Showing All ${filteredData.length} records`; 
