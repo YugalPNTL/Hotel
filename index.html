@@ -471,25 +471,28 @@
       
       html += `<div class="dash-grid">
                 <div style="background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-                  <div style="margin-bottom:10px; font-size:1.15em; color:#2c3e50;"><b>🍴 Total Food:</b> <span style="color:#27ae60; float:right;">₹${d.totalFood}</span></div>
-                  <div style="font-size:1.15em; color:#2c3e50;"><b>🛏️ Total Room:</b> <span style="color:#27ae60; float:right;">₹${d.totalRoom}</span></div>
-                  <div style="margin-top:15px; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.2em; color:#d35400; text-align:right;"><b>Total: ₹${d.grandTotal}</b></div>
+                    <div style="margin-bottom:10px; font-size:1.15em; color:#2c3e50;"><b>🍴 Total Food:</b> <span style="color:#27ae60; float:right;">₹${Number(d.totalFood).toLocaleString('en-IN')}</span></div>
+  <div style="font-size:1.15em; color:#2c3e50;"><b>🛏️ Total Room:</b> <span style="color:#27ae60; float:right;">₹${Number(d.totalRoom).toLocaleString('en-IN')}</span></div>
+  <div style="margin-top:15px; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.2em; color:#d35400; text-align:right;"><b>Total: ₹${Number(d.grandTotal).toLocaleString('en-IN')}</b></div>
+
                 </div>
-                <div style="background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+                                <div style="background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
                   <b style="color:#2c3e50; font-size:1.1em;">💳 Method-wise Total:</b>
                   <ul style="list-style-type: none; padding-left: 0; margin-top: 10px; margin-bottom: 15px;">
-                    ${Object.entries(combinedMethods).map(([m, a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.1em; color:#34495e;">${m}: <b style="float:right;">₹${a}</b></li>`).join('')}
+                    ${Object.entries(combinedMethods).map(([m, a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.1em; color:#34495e;">${m}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
                   </ul>
-                  <div style="margin-top:auto; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.2em; color:#d35400; text-align:right;"><b>Total: ₹${d.grandTotal}</b></div>
+                  <div style="margin-top:auto; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.2em; color:#d35400; text-align:right;"><b>Total: ₹${Number(d.grandTotal).toLocaleString('en-IN')}</b></div>
                 </div>
                </div>
-               <div class="grand-total" style="background:#2c3e50; color:#fff; padding:15px; border-radius:8px; margin-top:20px; font-size:1.5em; box-shadow:0 4px 6px rgba(0,0,0,0.1);">✅ Total Revenue: ₹${d.grandTotal}</div>
+               <div class="grand-total" style="background:#2c3e50; color:#fff; padding:15px; border-radius:8px; margin-top:20px; font-size:1.5em; box-shadow:0 4px 6px rgba(0,0,0,0.1);">✅ Total Revenue: ₹${Number(d.grandTotal).toLocaleString('en-IN')}</div>
+
                <div class="filter-chips">
-                 <button class="filter-chip ${activeGuestFilter==='all'?'active':''}" onclick="applyGuestFilter('all')">🔁 All</button>
-                 <button class="filter-chip ${activeGuestFilter==='food'?'active':''}" onclick="applyGuestFilter('food')">🍴 Only Food</button>
-                 <button class="filter-chip ${activeGuestFilter==='room'?'active':''}" onclick="applyGuestFilter('room')">🛏️ Only Room</button>
-                 <button class="filter-chip ${activeGuestFilter==='both'?'active':''}" onclick="applyGuestFilter('both')">🍴🛏️ Both</button>
-                 <button class="filter-chip ${activeGuestFilter==='zero'?'active':''}" onclick="applyGuestFilter('zero')">🚫 Zero Payment</button>
+                                  <button class="filter-chip ${activeGuestFilter==='all'?'active':''}" onclick="applyGuestFilter('all', event)">🔁 All</button>
+                 <button class="filter-chip ${activeGuestFilter==='food'?'active':''}" onclick="applyGuestFilter('food', event)">🍴 Only Food</button>
+                 <button class="filter-chip ${activeGuestFilter==='room'?'active':''}" onclick="applyGuestFilter('room', event)">🛏️ Only Room</button>
+                 <button class="filter-chip ${activeGuestFilter==='both'?'active':''}" onclick="applyGuestFilter('both', event)">🍴🛏️ Both</button>
+                 <button class="filter-chip ${activeGuestFilter==='zero'?'active':''}" onclick="applyGuestFilter('zero', event)">🚫 Zero Payment</button>
+
                </div>
                <div id="recordCount"></div>`;
                
@@ -551,7 +554,7 @@
     dash.innerHTML = html;
   }
 
-  function applyGuestFilter(filter) {
+  function applyGuestFilter(filter, event) {
     activeGuestFilter = filter;
     document.querySelectorAll('.filter-chip').forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
