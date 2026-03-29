@@ -501,56 +501,59 @@
       
       if (!d.filteredCategory || d.filteredCategory === "All") {
         let catTotal = Object.values(d.byCategory).reduce((sum, val) => sum + val, 0);
-        html += `<div class="dash-grid">
+                html += `<div class="dash-grid">
                   <div style="background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
                     <b style="color:#2c3e50; font-size:1.1em;">📂 Expenses by Category:</b>
                     <ul style="list-style-type: none; padding-left: 0; margin-top: 10px;">
-                      ${Object.entries(d.byCategory).map(([c,a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #e67e22; font-size:1.05em; color:#34495e;">${c}: <b style="float:right;">₹${a}</b></li>`).join('')}
+                      ${Object.entries(d.byCategory).map(([c,a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #e67e22; font-size:1.05em; color:#34495e;">${c}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
                     </ul>
-                    <div style="margin-top:10px; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.1em; color:#d35400; text-align:right;"><b>Category Total: ₹${catTotal}</b></div>
+                    <div style="margin-top:10px; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.1em; color:#d35400; text-align:right;"><b>Category Total: ₹${Number(catTotal).toLocaleString('en-IN')}</b></div>
                   </div>
                   <div style="background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
                     <b style="color:#2c3e50; font-size:1.1em;">💳 Expenses by Method:</b>
                     <ul style="list-style-type: none; padding-left: 0; margin-top: 10px;">
-                      ${Object.entries(d.byMethod).map(([m,a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.05em; color:#34495e;">${m}: <b style="float:right;">₹${a}</b></li>`).join('')}
+                      ${Object.entries(d.byMethod).map(([m,a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.05em; color:#34495e;">${m}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
                     </ul>
-                    <div style="margin-top:10px; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.1em; color:#d35400; text-align:right;"><b>Method Total: ₹${methTotal}</b></div>
+                    <div style="margin-top:10px; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.1em; color:#d35400; text-align:right;"><b>Method Total: ₹${Number(methTotal).toLocaleString('en-IN')}</b></div>
                   </div>
                  </div>
-                 <div class="grand-total" style="background:#c0392b; color:#fff; padding:15px; border-radius:8px; margin-top:20px; font-size:1.5em; box-shadow:0 4px 6px rgba(0,0,0,0.1);">📉 Grand Total Expense: ₹${d.grandTotal}</div>`;
+                 <div class="grand-total" style="background:#c0392b; color:#fff; padding:15px; border-radius:8px; margin-top:20px; font-size:1.5em; box-shadow:0 4px 6px rgba(0,0,0,0.1);">📉 Grand Total Expense: ₹${Number(d.grandTotal).toLocaleString('en-IN')}</div>`;
+
       } else {
         html += `<div class="dash-grid">
                   <div style="background:#fff; padding:20px; border-radius:8px; border-left: 6px solid #d35400; box-shadow:0 2px 5px rgba(0,0,0,0.05); display:flex; flex-direction:column; justify-content:center;">
                     <div style="font-size:1.1em; color:#7f8c8d; margin-bottom:5px;">Category Selected:</div>
                     <b style="font-size:1.4em; color:#d35400;">📂 ${d.filteredCategory}</b>
-                    <div style="font-size:1.6em; color:#2c3e50; font-weight:bold; margin-top:15px; border-top:1px solid #eee; padding-top:10px;">Total: ₹${d.grandTotal}</div>
+                    <div style="font-size:1.6em; color:#2c3e50; font-weight:bold; margin-top:15px; border-top:1px solid #eee; padding-top:10px;">Total: ₹${Number(d.grandTotal).toLocaleString('en-IN')}</div>
                   </div>
                   <div style="background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
                     <b style="color:#2c3e50; font-size:1.1em;">💳 Payment Methods Used:</b>
                     <ul style="list-style-type: none; padding-left: 0; margin-top: 10px; margin-bottom: 15px;">
-                      ${Object.entries(d.byMethod).map(([m,a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.1em; color:#34495e;">${m}: <b style="float:right;">₹${a}</b></li>`).join('')}
+                      ${Object.entries(d.byMethod).map(([m,a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.1em; color:#34495e;">${m}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
                     </ul>
-                    <div style="margin-top:auto; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.1em; color:#d35400; text-align:right;"><b>Method Total: ₹${methTotal}</b></div>
+                    <div style="margin-top:auto; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.1em; color:#d35400; text-align:right;"><b>Method Total: ₹${Number(methTotal).toLocaleString('en-IN')}</b></div>
                   </div>
                  </div>`;
       }
+
       
     } else if (currentTab === 'search') {
       html += `<div class="dash-grid">`;
       if (d.tType === "All" || d.tType === "Revenue") {
         html += `<div style="background:#ebf5fb; padding:20px; border-radius:8px; text-align:center; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
                   <b style="color:#2c3e50; font-size:1.1em;">💰 Total Received via ${d.method.toUpperCase()}</b>
-                  <div style="font-size:1.8em; color:#27ae60; font-weight:bold; margin-top:10px;">₹${d.totalReceived}</div>
+                  <div style="font-size:1.8em; color:#27ae60; font-weight:bold; margin-top:10px;">₹${Number(d.totalReceived).toLocaleString('en-IN')}</div>
                  </div>`;
       }
       if (d.tType === "All" || d.tType === "Expense") {
         html += `<div style="background:#fef5f5; padding:20px; border-radius:8px; text-align:center; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
                   <b style="color:#2c3e50; font-size:1.1em;">💸 Total Paid via ${d.method.toUpperCase()}</b>
-                  <div style="font-size:1.8em; color:#e74c3c; font-weight:bold; margin-top:10px;">₹${d.totalPaid}</div>
+                  <div style="font-size:1.8em; color:#e74c3c; font-weight:bold; margin-top:10px;">₹${Number(d.totalPaid).toLocaleString('en-IN')}</div>
                  </div>`;
       }
       html += `</div>`;
     }
+
     dash.innerHTML = html;
   }
 
