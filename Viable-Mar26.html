@@ -573,7 +573,7 @@
 
         // Per-tab state: caches fetched data so tab-switching doesn't lose it
         let tabCache = { revenue: null, expenses: null, search: null, analytics: null };
-        let tabFetchingFor = null; // which tab initiated the current fetch
+        let tabFetching = { revenue: false, expenses: false, search: false, analytics: false };
 
         // [Point 4 FIX] Track whether Google Charts is ready
         let chartsReady = false;
@@ -646,7 +646,7 @@
             document.getElementById('categoryContainer').style.display = (tabName === 'expenses') ? 'flex' : 'none';
 
             // If a fetch is in progress for THIS tab, show loader; otherwise hide it
-            if (tabFetchingFor === tabName) {
+            if (tabFetching[tabName]) {
                 document.getElementById('loader').style.display = 'block';
                 document.getElementById('content').innerHTML = '';
                 document.getElementById('dashboard').style.display = 'none';
@@ -698,7 +698,7 @@
             fetchBtn.textContent = 'Fetching...';
 
             let fetchTab = currentTab;
-            tabFetchingFor = fetchTab;
+            tabFetching[fetchTab] = true;
 
             if (fetchTab === 'analytics') {
                 function doAnalyticsFetch() {
@@ -706,7 +706,7 @@
                         .then(res => res.json())
                         .then(data => {
                             if (data.error) throw new Error(data.error);
-                            tabFetchingFor = null;
+                            tabFetching.analytics = false;
                             tabCache.analytics = { analyticsData: data };
                             if (currentTab === 'analytics') {
                                 renderAnalytics(data);
@@ -715,7 +715,7 @@
                                 document.getElementById('fetchBtn').textContent = 'Fetch Data';
                             }
                         })
-                        .catch(err => { tabFetchingFor = null; handleErr(err); });
+                        .catch(err => { tabFetching[fetchTab] = false; handleErr(err); });
                 }
                 if (!chartsReady) {
                     google.charts.setOnLoadCallback(function () { chartsReady = true; doAnalyticsFetch(); });
@@ -728,12 +728,12 @@
             let sDate = document.getElementById('startDate').value;
             let eDate = document.getElementById('endDate').value;
 
-            if (!sDate || !eDate) { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; tabFetchingFor = null; showModernAlert("⚠️ Attention: Please select both From and To dates to proceed!"); return; }
-            if (new Date(sDate) > new Date(eDate)) { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; tabFetchingFor = null; showModernAlert("🚫 Invalid Range: End Date cannot be before Start Date!"); return; }
+            if (!sDate || !eDate) { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; tabFetching[fetchTab] = false; showModernAlert("⚠️ Attention: Please select both From and To dates to proceed!"); return; }
+            if (new Date(sDate) > new Date(eDate)) { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; tabFetching[fetchTab] = false; showModernAlert("🚫 Invalid Range: End Date cannot be before Start Date!"); return; }
 
             if (fetchTab === 'search') {
                 let sel = document.getElementById('payMethod').value;
-                if (!sel || sel === "") { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; tabFetchingFor = null; showModernAlert("⚠️ Please select one option to proceed with the payment search!"); return; }
+                if (!sel || sel === "") { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; tabFetching[fetchTab] = false; showModernAlert("⚠️ Please select one option to proceed with the payment search!"); return; }
             }
 
             let startF = formatDateStr(sDate); let endF = formatDateStr(eDate);
@@ -754,10 +754,10 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.error) throw new Error(data.error);
-                    tabFetchingFor = null;
+                    tabFetching[fetchTab] = false;
                     onDataSuccess(data, fetchTab);
                 })
-                .catch(err => { tabFetchingFor = null; handleErr(err); });
+                .catch(err => { tabFetching[fetchTab] = false; handleErr(err); });
         }
 
         function handleErr(err) { showModernAlert("❌ Error: " + err.message); document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; }
