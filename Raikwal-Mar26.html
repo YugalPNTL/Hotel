@@ -1556,10 +1556,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        var fpConfig = { dateFormat: 'd/m/Y', allowInput: false, disableMobile: true, animate: true };
-        flatpickr('#startDate', fpConfig); flatpickr('#endDate', fpConfig);
-        flatpickr('#expStartDate', fpConfig); flatpickr('#expEndDate', fpConfig);
-        flatpickr('#payStartDate', fpConfig); flatpickr('#payEndDate', fpConfig);
+        var fpConfig = { dateFormat: 'd/m/Y', allowInput: false, disableMobile: true, animate: true, minDate: '01/03/2026', maxDate: '31/03/2026' };
+        var fpStart = Object.assign({}, fpConfig, { defaultDate: '01/03/2026' });
+        var fpEnd   = Object.assign({}, fpConfig, { defaultDate: '31/03/2026' });
+        flatpickr('#startDate', fpStart);    flatpickr('#endDate', fpEnd);
+        flatpickr('#expStartDate', fpStart); flatpickr('#expEndDate', fpEnd);
+        flatpickr('#payStartDate', fpStart); flatpickr('#payEndDate', fpEnd);
     </script>
 
 </body>
