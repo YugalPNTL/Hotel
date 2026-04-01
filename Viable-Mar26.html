@@ -217,6 +217,13 @@
             transform: translateY(-1px);
         }
 
+        button.fetch-btn:disabled {
+            background: #c0392b;
+            cursor: not-allowed;
+            opacity: 0.9;
+            transform: none;
+        }
+
         /* --- Table & Card Styling --- */
         .table-res {
             overflow-x: auto;
@@ -643,6 +650,7 @@
                 document.getElementById('dashboard').style.display = 'none';
                 document.getElementById('pagin').style.display = 'none';
                 document.getElementById('fetchBtn').disabled = true;
+                document.getElementById('fetchBtn').textContent = 'Fetching...';
                 return;
             }
 
@@ -658,6 +666,7 @@
             }
 
             document.getElementById('fetchBtn').disabled = false;
+            document.getElementById('fetchBtn').textContent = 'Fetch Data';
         }
 
         function restoreTabData(tabName) {
@@ -682,7 +691,9 @@
         function fetchData() {
             hideAlert(); document.getElementById('content').innerHTML = ''; document.getElementById('dashboard').style.display = 'none'; document.getElementById('pagin').style.display = 'none';
             document.getElementById('loader').style.display = 'block';
-            document.getElementById('fetchBtn').disabled = true;
+            let fetchBtn = document.getElementById('fetchBtn');
+            fetchBtn.disabled = true;
+            fetchBtn.textContent = 'Fetching...';
 
             let fetchTab = currentTab;
             tabFetchingFor = fetchTab;
@@ -699,6 +710,7 @@
                                 renderAnalytics(data);
                                 document.getElementById('loader').style.display = 'none';
                                 document.getElementById('fetchBtn').disabled = false;
+                                document.getElementById('fetchBtn').textContent = 'Fetch Data';
                             }
                         })
                         .catch(err => { tabFetchingFor = null; handleErr(err); });
@@ -714,12 +726,12 @@
             let sDate = document.getElementById('startDate').value;
             let eDate = document.getElementById('endDate').value;
 
-            if (!sDate || !eDate) { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; tabFetchingFor = null; showModernAlert("⚠️ Attention: Please select both From and To dates to proceed!"); return; }
-            if (new Date(sDate) > new Date(eDate)) { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; tabFetchingFor = null; showModernAlert("🚫 Invalid Range: End Date cannot be before Start Date!"); return; }
+            if (!sDate || !eDate) { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; tabFetchingFor = null; showModernAlert("⚠️ Attention: Please select both From and To dates to proceed!"); return; }
+            if (new Date(sDate) > new Date(eDate)) { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; tabFetchingFor = null; showModernAlert("🚫 Invalid Range: End Date cannot be before Start Date!"); return; }
 
             if (fetchTab === 'search') {
                 let sel = document.getElementById('payMethod').value;
-                if (!sel || sel === "") { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; tabFetchingFor = null; showModernAlert("⚠️ Please select one option to proceed with the payment search!"); return; }
+                if (!sel || sel === "") { document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; tabFetchingFor = null; showModernAlert("⚠️ Please select one option to proceed with the payment search!"); return; }
             }
 
             let startF = formatDateStr(sDate); let endF = formatDateStr(eDate);
@@ -746,7 +758,7 @@
                 .catch(err => { tabFetchingFor = null; handleErr(err); });
         }
 
-        function handleErr(err) { showModernAlert("❌ Error: " + err.message); document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; }
+        function handleErr(err) { showModernAlert("❌ Error: " + err.message); document.getElementById('loader').style.display = 'none'; document.getElementById('fetchBtn').disabled = false; document.getElementById('fetchBtn').textContent = 'Fetch Data'; }
 
         function onDataSuccess(response, fetchTab) {
             let dataForTab;
@@ -768,6 +780,7 @@
             if (currentTab === fetchTab) {
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('fetchBtn').disabled = false;
+                document.getElementById('fetchBtn').textContent = 'Fetch Data';
                 globalData = dataForTab;
                 curPage = 1; perPage = 10;
                 if (fetchTab === 'revenue') activeGuestFilter = 'all';
