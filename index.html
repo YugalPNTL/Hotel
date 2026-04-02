@@ -6,16 +6,8 @@
 <title>Viable &amp; Raikwal — 2026</title>
 <style>
   :root {
-    --sky-top:    #c9e8f5;
-    --sky-mid:    #e8f4fb;
     --ocean-deep: #1a6b8a;
     --ocean-mid:  #2a9dc4;
-    --ocean-lite: #5bbcd4;
-    --foam:       #ffffff;
-    --surface:    rgba(255,255,255,0.72);
-    --surface2:   rgba(255,255,255,0.45);
-    --border:     rgba(42,157,196,0.2);
-    --border2:    rgba(42,157,196,0.35);
     --text:       #0d3d52;
     --muted:      #5a8fa3;
     --accent-v:   #f07a00;
@@ -31,22 +23,14 @@
     font-family: var(--font-body);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    background:
-      linear-gradient(180deg,
-        #b8dff0 0%,
-        #ceeaf8 18%,
-        #dff2fb 36%,
-        #eaf7fd 52%,
-        #c8eaf5 68%,
-        #9dd4ea 84%,
-        #6dbddf 100%
-      );
+    background: linear-gradient(180deg,
+      #b8dff0 0%, #ceeaf8 18%, #dff2fb 36%,
+      #eaf7fd 52%, #c8eaf5 68%, #9dd4ea 84%, #6dbddf 100%
+    );
     background-attachment: fixed;
-    position: relative;
     overflow-x: hidden;
   }
 
-  /* subtle wave shimmer layer */
   body::before {
     content: '';
     position: fixed;
@@ -54,26 +38,7 @@
     background:
       radial-gradient(ellipse 80% 40% at 20% 10%, rgba(255,255,255,0.45) 0%, transparent 60%),
       radial-gradient(ellipse 60% 30% at 80% 5%,  rgba(255,255,255,0.3)  0%, transparent 55%),
-      radial-gradient(ellipse 100% 25% at 50% 100%, rgba(14,82,120,0.18)  0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ripple circles */
-  body::after {
-    content: '';
-    position: fixed;
-    bottom: -120px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 900px;
-    height: 240px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.35);
-    box-shadow:
-      0 0 0 30px rgba(255,255,255,0.06),
-      0 0 0 60px rgba(255,255,255,0.04),
-      0 0 0 100px rgba(255,255,255,0.025);
+      radial-gradient(ellipse 100% 25% at 50% 100%, rgba(14,82,120,0.18) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
   }
@@ -84,6 +49,16 @@
     padding: 52px 24px 30px;
     position: relative;
     z-index: 1;
+  }
+  header::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-v), var(--accent-r));
+    margin: 18px auto 0;
+    border-radius: 2px;
+    opacity: 0.7;
   }
 
   .year-badge {
@@ -99,7 +74,6 @@
     border: 1px solid rgba(42,157,196,0.25);
     font-weight: 600;
   }
-
   h1 {
     font-family: var(--font-head);
     font-size: clamp(28px, 7vw, 44px);
@@ -108,24 +82,12 @@
     letter-spacing: -0.5px;
     text-shadow: 0 2px 12px rgba(255,255,255,0.8);
   }
-
   .tagline {
     font-size: 18px;
     color: var(--muted);
     margin-top: 10px;
     letter-spacing: 1px;
     font-family: var(--font-head);
-  }
-
-  header::after {
-    content: '';
-    display: block;
-    width: 50px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent-v), var(--accent-r));
-    margin: 18px auto 0;
-    border-radius: 2px;
-    opacity: 0.7;
   }
 
   /* ── WRAPPER ── */
@@ -153,7 +115,6 @@
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 24px rgba(26,107,138,0.12), 0 1px 0 rgba(255,255,255,0.9) inset;
   }
-
   .tab-btn {
     flex: 1;
     height: 44px;
@@ -168,21 +129,12 @@
     cursor: pointer;
     transition: all 0.22s ease;
   }
-  .tab-btn.active-v {
-    color: #fff;
-    background: linear-gradient(135deg, #f07a00, #f5a623);
-    box-shadow: 0 4px 16px rgba(240,122,0,0.35);
-  }
-  .tab-btn.active-r {
-    color: #fff;
-    background: linear-gradient(135deg, #0ea5c9, #22c5e8);
-    box-shadow: 0 4px 16px rgba(14,165,201,0.35);
-  }
+  .tab-btn.active-v { color: #fff; background: linear-gradient(135deg, #f07a00, #f5a623); box-shadow: 0 4px 16px rgba(240,122,0,0.35); }
+  .tab-btn.active-r { color: #fff; background: linear-gradient(135deg, #0ea5c9, #22c5e8); box-shadow: 0 4px 16px rgba(14,165,201,0.35); }
 
   /* ── PANELS ── */
   .tab-panel { display: none; animation: fadeUp 0.28s ease both; }
   .tab-panel.active { display: block; }
-
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -205,10 +157,9 @@
     top: 50%;
     width: calc(50% - 56px);
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(42,157,196,0.3));
     transform: translateY(-4px);
   }
-  .season-label::before { left: 0; background: linear-gradient(90deg, transparent, rgba(42,157,196,0.3)); }
+  .season-label::before { left: 0;  background: linear-gradient(90deg,  transparent, rgba(42,157,196,0.3)); }
   .season-label::after  { right: 0; background: linear-gradient(270deg, transparent, rgba(42,157,196,0.3)); }
 
   /* ── MONTH LIST ── */
@@ -219,23 +170,31 @@
     margin-bottom: 22px;
   }
 
-  .month-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+  /* ── MONTH CARD ── */
+  .month-card {
     background: rgba(255,255,255,0.62);
     border: 1px solid rgba(255,255,255,0.95);
     border-radius: 14px;
-    padding: 15px 20px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 2px 12px rgba(26,107,138,0.08), 0 1px 0 rgba(255,255,255,0.8) inset;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    overflow: hidden;
+    transition: box-shadow 0.18s ease, background 0.18s ease;
   }
-  .month-row:hover {
-    transform: translateY(-2px);
-    background: rgba(255,255,255,0.82);
-    box-shadow: 0 6px 24px rgba(26,107,138,0.14), 0 1px 0 rgba(255,255,255,0.9) inset;
+  .month-card:hover {
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 6px 24px rgba(26,107,138,0.13), 0 1px 0 rgba(255,255,255,0.9) inset;
+  }
+
+  /* Month header row — clickable */
+  .month-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 15px 20px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .month-num {
@@ -256,28 +215,72 @@
     flex-shrink: 0;
   }
 
-  .month-link {
+  .month-name {
     font-family: var(--font-head);
     font-size: 18px;
     font-weight: 400;
-    text-decoration: none;
-    flex: 1;
     color: var(--text);
-    transition: color 0.18s;
+    flex: 1;
   }
-  .viable  .month-link:hover { color: var(--accent-v); }
-  .raikwal .month-link:hover { color: var(--accent-r); }
 
-  .link-arrow {
-    font-size: 14px;
+  .chevron {
+    width: 18px;
+    height: 18px;
     color: var(--muted);
     opacity: 0.5;
-    transition: transform 0.18s, opacity 0.18s;
+    transition: transform 0.25s ease, opacity 0.18s;
     flex-shrink: 0;
   }
-  .month-row:hover .link-arrow { transform: translateX(4px); opacity: 1; }
+  .month-card.open .chevron { transform: rotate(180deg); opacity: 0.8; }
 
-  /* ── FOOTER ── */
+  /* ── OPTIONS DRAWER ── */
+  .month-options {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.32s cubic-bezier(0.4,0,0.2,1);
+  }
+  .month-card.open .month-options { max-height: 120px; }
+
+  .options-inner {
+    display: flex;
+    gap: 10px;
+    padding: 0 16px 16px;
+  }
+
+  .opt-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s;
+  }
+  .opt-btn:hover { transform: translateY(-2px); }
+  .opt-btn:active { transform: translateY(0); }
+
+  /* Sheets button */
+  .btn-sheets {
+    background: linear-gradient(135deg, #1e7e45, #34a853);
+    color: #fff;
+    box-shadow: 0 3px 12px rgba(30,126,69,0.28);
+  }
+  .btn-sheets:hover { box-shadow: 0 6px 18px rgba(30,126,69,0.38); }
+
+  /* Web Page button — varies by tab */
+  .viable  .btn-web { background: linear-gradient(135deg, #d96a00, #f07a00); color: #fff; box-shadow: 0 3px 12px rgba(240,122,0,0.28); }
+  .viable  .btn-web:hover { box-shadow: 0 6px 18px rgba(240,122,0,0.38); }
+  .raikwal .btn-web { background: linear-gradient(135deg, #0882a3, #0ea5c9); color: #fff; box-shadow: 0 3px 12px rgba(14,165,201,0.28); }
+  .raikwal .btn-web:hover { box-shadow: 0 6px 18px rgba(14,165,201,0.38); }
+
+  /* icon glyphs */
+  .icon { font-style: normal; font-size: 15px; line-height: 1; }
+
   footer {
     text-align: center;
     padding: 28px;
@@ -295,7 +298,8 @@
 
   @media (max-width: 480px) {
     header { padding: 36px 20px 22px; }
-    .month-link { font-size: 16px; }
+    .month-name { font-size: 16px; }
+    .opt-btn { font-size: 12px; padding: 10px 10px; }
   }
 </style>
 </head>
@@ -319,162 +323,348 @@
 
     <div class="season-label">Spring</div>
     <div class="month-list">
-      <div class="month-row">
-        <span class="month-num">03</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Viable-Mar26.html">March 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">03</span>
+          <div class="month-divider"></div>
+          <span class="month-name">March 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Viable-Mar26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
-      <div class="month-row">
-        <span class="month-num">04</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Viable-Apr26.html">April 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">04</span>
+          <div class="month-divider"></div>
+          <span class="month-name">April 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Viable-Apr26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
-      <div class="month-row">
-        <span class="month-num">05</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Viable-May26.html">May 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">05</span>
+          <div class="month-divider"></div>
+          <span class="month-name">May 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Viable-May26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
+
     </div>
 
     <div class="season-label">Summer</div>
     <div class="month-list">
-      <div class="month-row">
-        <span class="month-num">06</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Viable-Jun26.html">June 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">06</span>
+          <div class="month-divider"></div>
+          <span class="month-name">June 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Viable-Jun26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
-      <div class="month-row">
-        <span class="month-num">07</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Viable-Jul26.html">July 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">07</span>
+          <div class="month-divider"></div>
+          <span class="month-name">July 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Viable-Jul26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
-      <div class="month-row">
-        <span class="month-num">08</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Viable-Aug26.html">August 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">08</span>
+          <div class="month-divider"></div>
+          <span class="month-name">August 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Viable-Aug26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
+
     </div>
 
     <div class="season-label">Autumn</div>
     <div class="month-list">
-      <div class="month-row">
-        <span class="month-num">09</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Viable-Sep26.html">September 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">09</span>
+          <div class="month-divider"></div>
+          <span class="month-name">September 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Viable-Sep26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
-      <div class="month-row">
-        <span class="month-num">10</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Viable-Oct26.html">October 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">10</span>
+          <div class="month-divider"></div>
+          <span class="month-name">October 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Viable-Oct26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
+
     </div>
 
     <div class="season-label">Winter</div>
     <div class="month-list">
-      <div class="month-row">
-        <span class="month-num">11</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Viable-Nov26.html">November 2026</a>
-        <span class="link-arrow">&#8594;</span>
-      </div>
-      <div class="month-row">
-        <span class="month-num">12</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Viable-Dec26.html">December 2026</a>
-        <span class="link-arrow">&#8594;</span>
-      </div>
-    </div>
 
-  </div>
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">11</span>
+          <div class="month-divider"></div>
+          <span class="month-name">November 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Viable-Nov26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">12</span>
+          <div class="month-divider"></div>
+          <span class="month-name">December 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Viable-Dec26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /viable -->
 
   <!-- ══ RAIKWAL ══ -->
   <div class="tab-panel raikwal" id="panel-raikwal" role="tabpanel">
 
     <div class="season-label">Spring</div>
     <div class="month-list">
-      <div class="month-row">
-        <span class="month-num">03</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Raikwal-Mar26.html">March 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">03</span>
+          <div class="month-divider"></div>
+          <span class="month-name">March 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Raikwal-Mar26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
-      <div class="month-row">
-        <span class="month-num">04</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Raikwal-Apr26.html">April 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">04</span>
+          <div class="month-divider"></div>
+          <span class="month-name">April 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Raikwal-Apr26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
-      <div class="month-row">
-        <span class="month-num">05</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Raikwal-May26.html">May 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">05</span>
+          <div class="month-divider"></div>
+          <span class="month-name">May 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Raikwal-May26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
+
     </div>
 
     <div class="season-label">Summer</div>
     <div class="month-list">
-      <div class="month-row">
-        <span class="month-num">06</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Raikwal-Jun26.html">June 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">06</span>
+          <div class="month-divider"></div>
+          <span class="month-name">June 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Raikwal-Jun26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
-      <div class="month-row">
-        <span class="month-num">07</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Raikwal-Jul26.html">July 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">07</span>
+          <div class="month-divider"></div>
+          <span class="month-name">July 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Raikwal-Jul26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
-      <div class="month-row">
-        <span class="month-num">08</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Raikwal-Aug26.html">August 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">08</span>
+          <div class="month-divider"></div>
+          <span class="month-name">August 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Raikwal-Aug26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
+
     </div>
 
     <div class="season-label">Autumn</div>
     <div class="month-list">
-      <div class="month-row">
-        <span class="month-num">09</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Raikwal-Sep26.html">September 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">09</span>
+          <div class="month-divider"></div>
+          <span class="month-name">September 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Raikwal-Sep26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
-      <div class="month-row">
-        <span class="month-num">10</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Raikwal-Oct26.html">October 2026</a>
-        <span class="link-arrow">&#8594;</span>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">10</span>
+          <div class="month-divider"></div>
+          <span class="month-name">October 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Raikwal-Oct26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
       </div>
+
     </div>
 
     <div class="season-label">Winter</div>
     <div class="month-list">
-      <div class="month-row">
-        <span class="month-num">11</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Raikwal-Nov26.html">November 2026</a>
-        <span class="link-arrow">&#8594;</span>
-      </div>
-      <div class="month-row">
-        <span class="month-num">12</span>
-        <div class="month-divider"></div>
-        <a class="month-link" target="_blank" href="https://yugalpntl.github.io/Hotel/Raikwal-Dec26.html">December 2026</a>
-        <span class="link-arrow">&#8594;</span>
-      </div>
-    </div>
 
-  </div>
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">11</span>
+          <div class="month-divider"></div>
+          <span class="month-name">November 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Raikwal-Nov26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">12</span>
+          <div class="month-divider"></div>
+          <span class="month-name">December 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="https://yugalpntl.github.io/Hotel/Raikwal-Dec26.html" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /raikwal -->
 
 </div>
 
@@ -482,6 +672,7 @@
 
 <script>
   let activeTab = 'viable';
+
   function switchTab(name) {
     if (name === activeTab) return;
     activeTab = name;
@@ -491,6 +682,10 @@
     const btn = document.getElementById('btn-' + name);
     btn.classList.add(name === 'viable' ? 'active-v' : 'active-r');
     btn.setAttribute('aria-selected','true');
+  }
+
+  function toggleCard(card) {
+    card.classList.toggle('open');
   }
 </script>
 </body>
