@@ -186,7 +186,6 @@
     box-shadow: 0 6px 24px rgba(26,107,138,0.13), 0 1px 0 rgba(255,255,255,0.9) inset;
   }
 
-  /* Month header row — clickable */
   .month-header {
     display: flex;
     align-items: center;
@@ -264,7 +263,6 @@
   .opt-btn:hover { transform: translateY(-2px); }
   .opt-btn:active { transform: translateY(0); }
 
-  /* Sheets button */
   .btn-sheets {
     background: linear-gradient(135deg, #1e7e45, #34a853);
     color: #fff;
@@ -272,14 +270,33 @@
   }
   .btn-sheets:hover { box-shadow: 0 6px 18px rgba(30,126,69,0.38); }
 
-  /* Web Page button — varies by tab */
   .viable  .btn-web { background: linear-gradient(135deg, #d96a00, #f07a00); color: #fff; box-shadow: 0 3px 12px rgba(240,122,0,0.28); }
   .viable  .btn-web:hover { box-shadow: 0 6px 18px rgba(240,122,0,0.38); }
   .raikwal .btn-web { background: linear-gradient(135deg, #0882a3, #0ea5c9); color: #fff; box-shadow: 0 3px 12px rgba(14,165,201,0.28); }
   .raikwal .btn-web:hover { box-shadow: 0 6px 18px rgba(14,165,201,0.38); }
 
-  /* icon glyphs */
   .icon { font-style: normal; font-size: 15px; line-height: 1; }
+
+  /* ── NO LINK WARNING ── */
+  .btn-no-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    background: rgba(0,0,0,0.04);
+    border: 1.5px dashed rgba(90,143,163,0.35);
+    color: var(--muted);
+    cursor: not-allowed;
+    opacity: 0.7;
+    user-select: none;
+    -webkit-user-select: none;
+  }
 
   footer {
     text-align: center;
@@ -308,7 +325,7 @@
 <header>
   <span class="year-badge">&#x2022; 2026 &#x2022;</span>
   <h1>Viable &amp; Raikwal</h1>
-  <p class="tagline">March — December</p>
+  <p class="tagline">February — December</p>
 </header>
 
 <div class="tab-wrapper">
@@ -320,6 +337,26 @@
 
   <!-- ══ VIABLE ══ -->
   <div class="tab-panel active viable" id="panel-viable" role="tabpanel">
+
+    <div class="season-label">Winter</div>
+    <div class="month-list">
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">02</span>
+          <div class="month-divider"></div>
+          <span class="month-name">February 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="https://docs.google.com/spreadsheets/d/1g3EmZdN1cprEGMGd0SLL9XrYpli9g5oCthuUEEfbzwE/edit?usp=drive_link" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
     <div class="season-label">Spring</div>
     <div class="month-list">
@@ -494,6 +531,26 @@
 
   <!-- ══ RAIKWAL ══ -->
   <div class="tab-panel raikwal" id="panel-raikwal" role="tabpanel">
+
+    <div class="season-label">Winter</div>
+    <div class="month-list">
+
+      <div class="month-card" onclick="toggleCard(this)">
+        <div class="month-header">
+          <span class="month-num">02</span>
+          <div class="month-divider"></div>
+          <span class="month-name">February 2026</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="month-options">
+          <div class="options-inner" onclick="event.stopPropagation()">
+            <a class="opt-btn btn-sheets" href="https://docs.google.com/spreadsheets/d/1OOTdfefx1vBznPiXxsY_df_nACk2yWdLNTZOMO86XqQ/edit?usp=drive_link" target="_blank"><em class="icon">&#9783;</em> Sheets</a>
+            <a class="opt-btn btn-web"    href="" target="_blank"><em class="icon">&#9741;</em> Web Page</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
     <div class="season-label">Spring</div>
     <div class="month-list">
@@ -687,6 +744,19 @@
   function toggleCard(card) {
     card.classList.toggle('open');
   }
+
+  // Replace empty links with "No Link Present" warning on load
+  window.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.opt-btn').forEach(function (a) {
+      if (!a.getAttribute('href') || a.getAttribute('href').trim() === '') {
+        var label = a.classList.contains('btn-sheets') ? '&#9783; No Sheet Added' : '&#9741; No Page Added';
+        var span = document.createElement('span');
+        span.className = 'btn-no-link';
+        span.innerHTML = label;
+        a.parentNode.replaceChild(span, a);
+      }
+    });
+  });
 </script>
 </body>
 </html>
