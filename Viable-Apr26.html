@@ -309,6 +309,12 @@ let chartsReady      = false;
 let isFetching       = false;
 let fetchTab         = null;  // which tab initiated the current/last fetch
 let tabCache         = { revenue: null, expenses: null, search: null, analytics: null };
+// Per-tab independent date memory
+let tabDates         = {
+  revenue:  { start: '2026-04-01', end: '2026-04-30' },
+  expenses: { start: '2026-04-01', end: '2026-04-30' },
+  search:   { start: '2026-04-01', end: '2026-04-30' },
+};
 
 // ============================================================
 //  INIT
@@ -360,6 +366,14 @@ window.addEventListener('resize', () => {
 //  TAB SWITCHING
 // ============================================================
 function switchTab(tab, btn) {
+  // Save current date values to the tab we're leaving (not analytics — it has no pickers)
+  if (currentTab !== 'analytics') {
+    tabDates[currentTab] = {
+      start: document.getElementById('startDate').value,
+      end:   document.getElementById('endDate').value
+    };
+  }
+
   currentTab = tab; activeGuestFilter = 'all';
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -371,6 +385,12 @@ function switchTab(tab, btn) {
   document.getElementById('categoryContainer').style.display = tab === 'expenses' ? 'flex' : 'none';
   document.getElementById('methodContainer').style.display   = tab === 'search'   ? 'flex' : 'none';
   document.getElementById('transTypeContainer').style.display= tab === 'search'   ? 'flex' : 'none';
+
+  // Load this tab's own saved dates into the inputs
+  if (!isAnalytics) {
+    document.getElementById('startDate').value = tabDates[tab].start;
+    document.getElementById('endDate').value   = tabDates[tab].end;
+  }
 
   // If a fetch is in progress, just update the active tab visually — don't render anything
   if (isFetching) return;
@@ -491,8 +511,12 @@ function processAndCache(tab) {
   const eDate = document.getElementById('endDate').value;
 
   if (tab === 'analytics') {
-    const guests   = filterByDate(allData.guests   || [], 'checkOutDate', sDate, eDate);
-    const expenses = filterByDate(allData.expenses || [], 'date',         sDate, eDate);
+    // Analytics always uses full month — date pickers are hidden on this tab
+    // so they may hold stale values from another tab
+    const aStart = '2026-04-01';
+    const aEnd   = '2026-04-30';
+    const guests   = filterByDate(allData.guests   || [], 'checkOutDate', aStart, aEnd);
+    const expenses = filterByDate(allData.expenses || [], 'date',         aStart, aEnd);
     const totalFood = guests.reduce((s, g) => s + g.food.total, 0);
     const totalRoom = guests.reduce((s, g) => s + g.room.total, 0);
     const totalRev  = totalFood + totalRoom;
