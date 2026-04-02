@@ -156,6 +156,10 @@
     }
     .filter-chip:hover { background: #27ae60; color: white; }
     .filter-chip.active { background: #1a7a44; border-color: #1a7a44; color: white; }
+    .filter-chip:disabled {
+      opacity: 0.35; cursor: not-allowed; border-color: #bdc3c7; color: #bdc3c7;
+    }
+    .filter-chip:disabled:hover { background: white; color: #bdc3c7; }
 
     /* --- PAGINATION --- */
     .pagination {
@@ -681,9 +685,28 @@ function renderDashboard(type, d) {
   let html = '<h3>📊 Range Summary</h3>';
 
   if (type === 'revenue') {
-    const methHtml = Object.entries(d.methods).map(([m, a]) =>
-      `<li style="margin-bottom:8px;padding-left:10px;border-left:3px solid #3498db;font-size:1.05em;color:#34495e;">
-        ${m}: <b style="float:right;">₹${fmt(a)}</b></li>`).join('');
+    // Sort method amounts descending
+    const methHtml = Object.entries(d.methods)
+      .sort((a, b) => b[1] - a[1])
+      .map(([m, a]) =>
+        `<li style="margin-bottom:8px;padding-left:10px;border-left:3px solid #3498db;font-size:1.05em;color:#34495e;">
+          ${m}: <b style="float:right;">₹${fmt(a)}</b></li>`).join('');
+
+    // Compute per-filter guest counts to enable/disable chips
+    const guests    = globalData;
+    const cntAll    = guests.length;
+    const cntFood   = guests.filter(g => g.food.total > 0 && g.room.total === 0).length;
+    const cntRoom   = guests.filter(g => g.room.total > 0 && g.food.total === 0).length;
+    const cntBoth   = guests.filter(g => g.food.total > 0 && g.room.total > 0).length;
+    const cntZero   = guests.filter(g => g.grandTotal === 0).length;
+
+    const chip = (key, label, count) => {
+      const isActive  = activeGuestFilter === key;
+      const isDisabled = count === 0 && key !== 'all';
+      return `<button class="filter-chip ${isActive ? 'active' : ''}" 
+        onclick="applyFilter('${key}',event)" ${isDisabled ? 'disabled' : ''}>
+        ${label} ${isDisabled ? '(0)' : ''}</button>`;
+    };
 
     html += `<div class="dash-grid">
       <div class="dash-card">
@@ -701,19 +724,24 @@ function renderDashboard(type, d) {
       ✅ Total Revenue: ₹${fmt(d.grandTotal)}
     </div>
     <div class="filter-chips">
-      <button class="filter-chip ${activeGuestFilter==='all'  ?'active':''}" onclick="applyFilter('all'  ,event)">🔁 All</button>
-      <button class="filter-chip ${activeGuestFilter==='food' ?'active':''}" onclick="applyFilter('food' ,event)">🍴 Only Food</button>
-      <button class="filter-chip ${activeGuestFilter==='room' ?'active':''}" onclick="applyFilter('room' ,event)">🛏️ Only Room</button>
-      <button class="filter-chip ${activeGuestFilter==='both' ?'active':''}" onclick="applyFilter('both' ,event)">🍴🛏️ Both</button>
-      <button class="filter-chip ${activeGuestFilter==='zero' ?'active':''}" onclick="applyFilter('zero' ,event)">🚫 Zero Payment</button>
+      ${chip('all',  '🔁 All (' + cntAll + ')', cntAll)}
+      ${chip('food', '🍴 Only Food', cntFood)}
+      ${chip('room', '🛏️ Only Room', cntRoom)}
+      ${chip('both', '🍴🛏️ Both', cntBoth)}
+      ${chip('zero', '🚫 Zero Payment', cntZero)}
     </div>
     <div id="recordCount"></div>`;
 
   } else if (type === 'expenses') {
-    const catHtml = Object.entries(d.byCategory).map(([c, a]) =>
-      `<li style="margin-bottom:8px;padding-left:10px;border-left:3px solid #e67e22;font-size:1.05em;color:#34495e;">${c}: <b style="float:right;">₹${fmt(a)}</b></li>`).join('');
-    const methHtml2 = Object.entries(d.byMethod).map(([m, a]) =>
-      `<li style="margin-bottom:8px;padding-left:10px;border-left:3px solid #3498db;font-size:1.05em;color:#34495e;">${m}: <b style="float:right;">₹${fmt(a)}</b></li>`).join('');
+    // Sort category and method amounts descending
+    const catHtml = Object.entries(d.byCategory)
+      .sort((a, b) => b[1] - a[1])
+      .map(([c, a]) =>
+        `<li style="margin-bottom:8px;padding-left:10px;border-left:3px solid #e67e22;font-size:1.05em;color:#34495e;">${c}: <b style="float:right;">₹${fmt(a)}</b></li>`).join('');
+    const methHtml2 = Object.entries(d.byMethod)
+      .sort((a, b) => b[1] - a[1])
+      .map(([m, a]) =>
+        `<li style="margin-bottom:8px;padding-left:10px;border-left:3px solid #3498db;font-size:1.05em;color:#34495e;">${m}: <b style="float:right;">₹${fmt(a)}</b></li>`).join('');
 
     html += `<div class="dash-grid">
       <div class="dash-card">
