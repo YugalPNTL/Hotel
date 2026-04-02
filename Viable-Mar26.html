@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -439,11 +440,19 @@
                 width: 100%;
             }
 
-            .tab-btn {
-                padding: 10px 15px;
-                font-size: 0.95em;
+            /* Adjust tab container gap for mobile */
+            .tabs {
+                gap: 2px;
+                justify-content: space-between;
             }
 
+            /* Significantly reduced padding and font-size to fit all 4 tabs */
+            .tab-btn {
+                padding: 10px 4px;
+                font-size: 0.82em;
+            }
+            
+            /* ... rest of the media query ... */
             .chart-container {
                 grid-template-columns: 1fr;
             }
@@ -476,10 +485,9 @@
         </div>
 
         <div class="tabs">
-            <!-- [Point 3 FIX] Tab names now match their labels: revenue, expenses, search, analytics -->
             <button class="tab-btn active" onclick="switchTab('revenue', this)">🛏️ Revenue</button>
             <button class="tab-btn" onclick="switchTab('expenses', this)">💸 Expenses</button>
-            <button class="tab-btn" onclick="switchTab('search', this)">🔍 Payment Search</button>
+            <button class="tab-btn" onclick="switchTab('search', this)">🔍 Payment</button>
             <button class="tab-btn" style="color:#d35400;" onclick="switchTab('analytics', this)">📊 Analytics</button>
         </div>
 
