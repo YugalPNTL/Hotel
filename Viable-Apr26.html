@@ -387,6 +387,7 @@ let activeGuestFilter= 'all';
 let chartsReady      = false;
 let isFetching       = false;
 let fetchTab         = null;  // which tab initiated the current/last fetch
+let pendingCallbacks = [];    // queued actions waiting for in-flight API response
 let tabCache         = { revenue: null, expenses: null, search: null, analytics: null };
 // Per-tab independent date memory
 let tabDates         = {
@@ -404,6 +405,35 @@ function clearDataCache() {
   allData          = null;
   allDataTimestamp = null;
   tabCache         = { revenue: null, expenses: null, search: null, analytics: null };
+  pendingCallbacks = [];
+}
+
+// Lock/unlock both Fetch and Remarks buttons together (same-tab mutual lock)
+function lockButtons() {
+  document.getElementById('fetchBtn').disabled    = true;
+  document.getElementById('fetchBtn').textContent = 'Fetching...';
+  document.getElementById('remarksBtn').disabled  = true;
+  document.getElementById('remarksBtn').textContent = 'Loading...';
+}
+function unlockButtons() {
+  document.getElementById('fetchBtn').disabled    = false;
+  document.getElementById('fetchBtn').textContent = 'Fetch Data';
+  document.getElementById('remarksBtn').disabled  = false;
+  document.getElementById('remarksBtn').textContent = '\ud83d\udcdd Get Remarks';
+}
+
+// Fetch with 30-second timeout
+const FETCH_TIMEOUT_MS = 30000;
+function fetchWithTimeout(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  return fetch(url, { signal: controller.signal })
+    .then(r => { clearTimeout(timer); return r; })
+    .catch(err => {
+      clearTimeout(timer);
+      if (err.name === 'AbortError') throw new Error('Request timed out. Please check your connection and try again.');
+      throw err;
+    });
 }
 
 // ============================================================
@@ -441,7 +471,7 @@ google.charts.setOnLoadCallback(() => { chartsReady = true; });
   });
 
   // Silent pre-load of dropdown values on page open (no loader shown)
-  fetch(API_URL + '?action=getDropdown')
+  fetchWithTimeout(API_URL + '?action=getDropdown')
     .then(r => r.json())
     .then(data => { if (!data.error) populateDropdowns(data); })
     .catch(() => { /* silent fail — dropdowns stay with default static options */ });
@@ -496,11 +526,20 @@ function switchTab(tab, btn) {
     document.getElementById('endDate').value   = tabDates[tab].end;
   }
 
-  // If a fetch is in progress, just update the active tab visually — don't render anything
-  if (isFetching) return;
+  // If a fetch is in progress, re-enable Fetch on the new tab (Rule 2)
+  // so the user can click it — but clicking won't send a new API call
+  if (isFetching) {
+    document.getElementById('fetchBtn').disabled    = false;
+    document.getElementById('fetchBtn').textContent = 'Fetch Data';
+    document.getElementById('remarksBtn').disabled  = false;
+    document.getElementById('remarksBtn').textContent = '\ud83d\udcdd Get Remarks';
+    return;
+  }
 
   document.getElementById('fetchBtn').disabled    = false;
   document.getElementById('fetchBtn').textContent = 'Fetch Data';
+  document.getElementById('remarksBtn').disabled  = false;
+  document.getElementById('remarksBtn').textContent = '\ud83d\udcdd Get Remarks';
 
   if (tabCache[tab]) {
     // This tab has been explicitly fetched before — restore its cached data
@@ -535,47 +574,49 @@ function fetchData() {
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('pagin').style.display     = 'none';
   document.getElementById('loader').style.display    = 'block';
-  document.getElementById('fetchBtn').disabled       = true;
-  document.getElementById('fetchBtn').textContent    = 'Fetching...';
+  lockButtons();
 
   function onDataReady() {
     document.getElementById('loader').style.display = 'none';
-    document.getElementById('fetchBtn').disabled    = false;
-    document.getElementById('fetchBtn').textContent = 'Fetch Data';
+    unlockButtons();
 
     // Process + cache result for the tab that initiated the fetch
     processAndCache(fetchTab);
 
     // Only render if user is still on the same tab that clicked Fetch
     if (currentTab === fetchTab) restoreFromCache(fetchTab);
-    // If user switched away — they see blank on new tab (correct)
-    // They'll see data when they switch back to fetchTab
   }
 
   if (allData && !isDataStale()) {
     // Raw data cached and still fresh — skip API call, just re-process
     isFetching = false;
     onDataReady();
+  } else if (isFetching) {
+    // Another request is already in-flight — queue this action, don't send a new call
+    pendingCallbacks.push(onDataReady);
   } else {
     // First ever fetch — call the API
     isFetching = true;
-    fetch(API_URL + '?action=getAll')
+    fetchWithTimeout(API_URL + '?action=getAll')
       .then(r => r.json())
       .then(data => {
         if (data.error) throw new Error(data.error);
         allData          = data;
-        allDataTimestamp = Date.now(); // record fetch time for expiry check
-        normalizeAllDates(allData); // fix any non-yyyy-MM-dd date strings
+        allDataTimestamp = Date.now();
+        normalizeAllDates(allData);
         isFetching = false;
         populateDropdowns(data.dropdown);
         onDataReady();
+        // Execute all queued callbacks
+        pendingCallbacks.forEach(cb => cb());
+        pendingCallbacks = [];
       })
       .catch(err => {
         isFetching = false;
         document.getElementById('loader').style.display = 'none';
-        document.getElementById('fetchBtn').disabled    = false;
-        document.getElementById('fetchBtn').textContent = 'Fetch Data';
+        unlockButtons();
         showAlert('❌ Error: ' + err.message);
+        pendingCallbacks = [];
       });
   }
 }
@@ -1213,13 +1254,10 @@ function hideAlert() {
 //  REMARKS MODAL
 // ============================================================
 function getRemarks() {
-  const btn = document.getElementById('remarksBtn');
-  btn.disabled = true;
-  btn.textContent = 'Loading...';
+  lockButtons();
 
   function showRemarks() {
-    btn.disabled = false;
-    btn.textContent = '\ud83d\udcdd Get Remarks';
+    unlockButtons();
 
     const tab   = currentTab;
     const modal = document.getElementById('remarksModal');
@@ -1229,7 +1267,7 @@ function getRemarks() {
     let html = '';
 
     if (tab === 'revenue') {
-      title.textContent = '\ud83d\udcdd Guest Remarks — Whole Month';
+      title.textContent = '\ud83d\udcdd Guest Remarks \u2014 Whole Month';
       const withRemarks = (allData.guests || []).filter(g => g.remarks && g.remarks.trim() !== '');
       if (!withRemarks.length) {
         html = '<div class="modal-empty">No guest remarks found for this month.</div>';
@@ -1245,7 +1283,7 @@ function getRemarks() {
         html += `</table>`;
       }
     } else if (tab === 'expenses') {
-      title.textContent = '\ud83d\udcdd Expense Remarks — Whole Month';
+      title.textContent = '\ud83d\udcdd Expense Remarks \u2014 Whole Month';
       const withRemarks = (allData.expenses || []).filter(e => e.remarks && e.remarks.trim() !== '');
       if (!withRemarks.length) {
         html = '<div class="modal-empty">No expense remarks found for this month.</div>';
@@ -1263,27 +1301,35 @@ function getRemarks() {
 
     body.innerHTML = html;
     modal.classList.add('open');
-    document.body.style.overflow = 'hidden'; // prevent background scroll
+    document.body.style.overflow = 'hidden';
   }
 
-  // Use allData if available and fresh — same cache logic as fetchData
+  // Use allData if available and fresh
   if (allData && !isDataStale()) {
     showRemarks();
+  } else if (isFetching) {
+    // Another request is already in-flight — queue this action
+    pendingCallbacks.push(showRemarks);
   } else {
-    fetch(API_URL + '?action=getAll')
+    isFetching = true;
+    fetchWithTimeout(API_URL + '?action=getAll')
       .then(r => r.json())
       .then(data => {
         if (data.error) throw new Error(data.error);
         allData          = data;
         allDataTimestamp = Date.now();
         normalizeAllDates(allData);
+        isFetching = false;
         populateDropdowns(data.dropdown);
         showRemarks();
+        pendingCallbacks.forEach(cb => cb());
+        pendingCallbacks = [];
       })
       .catch(err => {
-        btn.disabled = false;
-        btn.textContent = '\ud83d\udcdd Get Remarks';
+        isFetching = false;
+        unlockButtons();
         showAlert('\u274c Error loading remarks: ' + err.message);
+        pendingCallbacks = [];
       });
   }
 }
