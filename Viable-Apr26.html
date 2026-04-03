@@ -1048,7 +1048,7 @@ function buildTable(data) {
       }
       if (transType !== 'Revenue') {
         const exp = (row.expenseEntries || []).map(e =>
-          `<div style="margin-bottom:5px;overflow:hidden;">• ${e.item} <span style="color:#2980b9;font-weight:bold;">[${e.paymentMethod}]</span> <span style="color:#7f8c8d;">(${e.type})</span><b style="color:#c0392b;float:right;">₹${fmt(e.amount)}</b></div>`
+          `<div style="margin-bottom:5px;overflow:hidden;">• ${e.item} <span style="color:#2980b9;font-weight:bold;">[${e.paymentMethod}]</span> <span style="color:#7f8c8d;">(${e.type})</span><b style="color:#c0392b;float:right;font-size:1.1em;">₹${fmt(e.amount)}</b></div>`
         ).join('') || `<span style="color:#999;font-style:italic;">No Expenses</span>`;
         r += `<td style="vertical-align:top;">${exp}</td>`;
       }
@@ -1104,7 +1104,7 @@ function buildCards(data) {
       if (transType !== 'Revenue') {
         if (item.expenseEntries && item.expenseEntries.length) {
           item.expenseEntries.forEach(e => html +=
-            `<div style="margin-bottom:5px;overflow:hidden;">• ${e.item} <span style="color:#2980b9;font-weight:bold;">[${e.paymentMethod}]</span> <span style="color:#7f8c8d;">(${e.type})</span><b style="color:#c0392b;float:right;">₹${fmt(e.amount)}</b></div>`
+            `<div style="margin-bottom:5px;overflow:hidden;">• ${e.item} <span style="color:#2980b9;font-weight:bold;">[${e.paymentMethod}]</span> <span style="color:#7f8c8d;">(${e.type})</span><b style="color:#c0392b;float:right;font-size:1.1em;">₹${fmt(e.amount)}</b></div>`
           );
         } else html += `<div class="empty-state">No Expenses</div>`;
       }
