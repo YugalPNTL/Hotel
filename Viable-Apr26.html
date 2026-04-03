@@ -200,6 +200,60 @@
     .perc-table th:nth-child(2), .perc-table td:nth-child(2) { width: 35%; white-space: nowrap; }
     .perc-table th:nth-child(3), .perc-table td:nth-child(3) { width: 20%; }
 
+    /* --- REMARKS BUTTON BAR --- */
+    .remarks-bar {
+      display: none; align-items: center; gap: 12px;
+      background: linear-gradient(135deg, #f5f0ff 0%, #ede7fb 100%);
+      padding: 10px 18px; border-radius: 8px; margin-bottom: 15px;
+      border-left: 5px solid #8e44ad;
+    }
+    .remarks-bar span { color: #6c3483; font-size: 0.9em; font-weight: 600; }
+    .remarks-btn {
+      background: linear-gradient(135deg, #8e44ad, #6c3483); color: white;
+      border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer;
+      font-weight: bold; font-size: 0.95em; transition: 0.3s;
+      box-shadow: 0 2px 6px rgba(142,68,173,0.3);
+    }
+    .remarks-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(142,68,173,0.4); }
+    .remarks-btn:disabled { opacity: 0.7; cursor: wait; transform: none; }
+
+    /* --- MODAL --- */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); z-index: 9999;
+      justify-content: center; align-items: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white; border-radius: 12px; width: 100%; max-width: 700px;
+      max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+      animation: modalIn 0.25s ease-out;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 20px; border-bottom: 1px solid #eee;
+      background: linear-gradient(135deg, #8e44ad, #6c3483); color: white;
+      border-radius: 12px 12px 0 0; position: sticky; top: 0; z-index: 1;
+    }
+    .modal-header h3 { margin: 0; font-size: 1.15em; }
+    .modal-close {
+      background: rgba(255,255,255,0.2); border: none; color: white;
+      font-size: 1.4em; width: 34px; height: 34px; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.35); }
+    .modal-body { padding: 15px 20px; }
+    .modal-body table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+    .modal-body th {
+      background: #f8f4ff; color: #6c3483; padding: 10px 8px;
+      border-bottom: 2px solid #d5c4e0; text-align: left;
+    }
+    .modal-body td { padding: 10px 8px; border-bottom: 1px solid #f0e8f6; vertical-align: top; }
+    .modal-body tr:hover { background: #faf7ff; }
+    .modal-empty { text-align: center; color: #999; padding: 30px; font-style: italic; }
+
     /* --- RESPONSIVE --- */
     @media (max-width: 600px) {
       .controls { flex-direction: column; align-items: stretch; }
@@ -210,6 +264,9 @@
       .chart-container { grid-template-columns: 1fr; }
       .card-grid { grid-template-columns: 1fr; }
       .perc-table { font-size: 0.8em; }
+      .remarks-bar { flex-direction: column; text-align: center; }
+      .modal-box { max-width: 100%; margin: 10px; }
+      .modal-body table { font-size: 0.82em; }
     }
 
     .google-visualization-tooltip { pointer-events: none; }
@@ -275,6 +332,11 @@
     </div>
   </div>
 
+  <div class="remarks-bar" id="remarksBar">
+    <button class="remarks-btn" id="remarksBtn" onclick="getRemarks()">📝 Get Remarks</button>
+    <span>Get Remarks for Whole Month</span>
+  </div>
+
   <div id="loader"><span class="css-spinner"></span> Fetching data, please wait...</div>
   <div id="dashboard" class="dashboard"></div>
 
@@ -292,6 +354,17 @@
 
   <div id="content"></div>
 
+</div>
+
+<!-- Remarks Modal -->
+<div class="modal-overlay" id="remarksModal" onclick="if(event.target===this)closeRemarks()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="remarksModalTitle">📝 Remarks</h3>
+      <button class="modal-close" onclick="closeRemarks()">&times;</button>
+    </div>
+    <div class="modal-body" id="remarksModalBody"></div>
+  </div>
 </div>
 
 <script>
@@ -415,6 +488,7 @@ function switchTab(tab, btn) {
   document.getElementById('categoryContainer').style.display = tab === 'expenses' ? 'flex' : 'none';
   document.getElementById('methodContainer').style.display   = tab === 'search'   ? 'flex' : 'none';
   document.getElementById('transTypeContainer').style.display= tab === 'search'   ? 'flex' : 'none';
+  document.getElementById('remarksBar').style.display = (tab === 'revenue' || tab === 'expenses') ? 'flex' : 'none';
 
   // Load this tab's own saved dates into the inputs
   if (!isAnalytics) {
@@ -1133,6 +1207,90 @@ function hideAlert() {
   const bar = document.getElementById('alertBar');
   bar.style.opacity = '0';
   setTimeout(() => { if (bar.style.opacity === '0') bar.style.display = 'none'; }, 400);
+}
+
+// ============================================================
+//  REMARKS MODAL
+// ============================================================
+function getRemarks() {
+  const btn = document.getElementById('remarksBtn');
+  btn.disabled = true;
+  btn.textContent = 'Loading...';
+
+  function showRemarks() {
+    btn.disabled = false;
+    btn.textContent = '\ud83d\udcdd Get Remarks';
+
+    const tab   = currentTab;
+    const modal = document.getElementById('remarksModal');
+    const title = document.getElementById('remarksModalTitle');
+    const body  = document.getElementById('remarksModalBody');
+
+    let html = '';
+
+    if (tab === 'revenue') {
+      title.textContent = '\ud83d\udcdd Guest Remarks — Whole Month';
+      const withRemarks = (allData.guests || []).filter(g => g.remarks && g.remarks.trim() !== '');
+      if (!withRemarks.length) {
+        html = '<div class="modal-empty">No guest remarks found for this month.</div>';
+      } else {
+        html = `<table><tr><th>Date</th><th>Guest & Total</th><th>Remarks</th></tr>`;
+        withRemarks.forEach(g => {
+          html += `<tr>
+            <td style="white-space:nowrap;">${fmtDate(g.checkOutDate)}</td>
+            <td><b>${g.guestName || '-'}</b><br><span style="color:#27ae60;font-weight:bold;">\u20b9${fmt(g.grandTotal)}</span></td>
+            <td>${g.remarks}</td>
+          </tr>`;
+        });
+        html += `</table>`;
+      }
+    } else if (tab === 'expenses') {
+      title.textContent = '\ud83d\udcdd Expense Remarks — Whole Month';
+      const withRemarks = (allData.expenses || []).filter(e => e.remarks && e.remarks.trim() !== '');
+      if (!withRemarks.length) {
+        html = '<div class="modal-empty">No expense remarks found for this month.</div>';
+      } else {
+        html = `<table><tr><th>Date</th><th>Remarks</th></tr>`;
+        withRemarks.forEach(e => {
+          html += `<tr>
+            <td style="white-space:nowrap;">${fmtDate(e.date)}</td>
+            <td>${e.remarks}</td>
+          </tr>`;
+        });
+        html += `</table>`;
+      }
+    }
+
+    body.innerHTML = html;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden'; // prevent background scroll
+  }
+
+  // Use allData if available and fresh — same cache logic as fetchData
+  if (allData && !isDataStale()) {
+    showRemarks();
+  } else {
+    fetch(API_URL + '?action=getAll')
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) throw new Error(data.error);
+        allData          = data;
+        allDataTimestamp = Date.now();
+        normalizeAllDates(allData);
+        populateDropdowns(data.dropdown);
+        showRemarks();
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.textContent = '\ud83d\udcdd Get Remarks';
+        showAlert('\u274c Error loading remarks: ' + err.message);
+      });
+  }
+}
+
+function closeRemarks() {
+  document.getElementById('remarksModal').classList.remove('open');
+  document.body.style.overflow = ''; // restore page scroll
 }
 </script>
 
