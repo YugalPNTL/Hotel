@@ -371,7 +371,7 @@
 // ============================================================
 //  PASTE YOUR DEPLOYED APPS SCRIPT URL HERE
 // ============================================================
-const API_URL = "https://script.google.com/macros/s/AKfycbwzvP6RGbBYv1CE98_gqNKrOj-x4IvCSEwkEdjbjqCl0zeVQU4NTYROoZdIUyAnUkUhow/exec";
+const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
 
 // ============================================================
 //  STATE
@@ -456,14 +456,13 @@ google.charts.setOnLoadCallback(() => { chartsReady = true; });
 
   document.getElementById('payMethod').addEventListener('change', function() {
     const h = document.getElementById('searchHint');
-    if (!this.value)            h.innerText = '';
-    else if (this.value === 'All') h.innerHTML = "📊 Showing <b>All Payment Methods</b>";
+    if (!this.value || this.value === 'All') h.innerText = '';
     else h.innerHTML = `🎯 <span style='color:#27ae60;'>Only <b>${this.value}</b> Payments</span>`;
   });
 
   document.getElementById('expCategory').addEventListener('change', function() {
     const h = document.getElementById('catHint');
-    if (this.value === 'All') h.innerHTML = `📂 <span style='color:#2980b9;'>Showing <b>All Categories</b></span>`;
+    if (this.value === 'All') h.innerHTML = '';
     else h.innerHTML = `🎯 <span style='color:#d35400;'>Showing <b>${this.value}</b> only</span>`;
   });
 
