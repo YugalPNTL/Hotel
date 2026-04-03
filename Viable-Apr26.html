@@ -304,6 +304,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwzvP6RGbBYv1CE98_gqNKr
 //  STATE
 // ============================================================
 let allData          = null;
+let allDataTimestamp = null;              // when allData was last fetched
+const DATA_MAX_AGE_MS = 60 * 60 * 1000;  // 1 hour in milliseconds
 let currentTab       = 'revenue';
 let globalData       = [];
 let curPage          = 1;
@@ -319,6 +321,17 @@ let tabDates         = {
   expenses: { start: '2026-04-01', end: '2026-04-30' },
   search:   { start: '2026-04-01', end: '2026-04-30' },
 };
+
+function isDataStale() {
+  if (!allData || !allDataTimestamp) return true;
+  return (Date.now() - allDataTimestamp) > DATA_MAX_AGE_MS;
+}
+
+function clearDataCache() {
+  allData          = null;
+  allDataTimestamp = null;
+  tabCache         = { revenue: null, expenses: null, search: null, analytics: null };
+}
 
 // ============================================================
 //  INIT
@@ -364,6 +377,19 @@ google.charts.setOnLoadCallback(() => { chartsReady = true; });
 window.addEventListener('resize', () => {
   if (currentTab === 'analytics' && tabCache.analytics && chartsReady) drawAnalyticsCharts(tabCache.analytics);
   else if (globalData.length > 0) renderUI();
+});
+
+// When tab regains focus (e.g. user switches back on mobile),
+// silently expire stale data so the next Fetch click goes to the server.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && isDataStale()) {
+    clearDataCache();
+    // Clear rendered content on all tabs so user knows data is stale
+    globalData = [];
+    document.getElementById('content').innerHTML   = '';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('pagin').style.display     = 'none';
+  }
 });
 
 // ============================================================
@@ -452,8 +478,8 @@ function fetchData() {
     // They'll see data when they switch back to fetchTab
   }
 
-  if (allData) {
-    // Raw data already cached — skip API call, just re-process with current filter values
+  if (allData && !isDataStale()) {
+    // Raw data cached and still fresh — skip API call, just re-process
     isFetching = false;
     onDataReady();
   } else {
@@ -463,7 +489,8 @@ function fetchData() {
       .then(r => r.json())
       .then(data => {
         if (data.error) throw new Error(data.error);
-        allData    = data;
+        allData          = data;
+        allDataTimestamp = Date.now(); // record fetch time for expiry check
         normalizeAllDates(allData); // fix any non-yyyy-MM-dd date strings
         isFetching = false;
         populateDropdowns(data.dropdown);
