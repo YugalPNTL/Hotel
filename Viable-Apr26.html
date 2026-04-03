@@ -1120,13 +1120,15 @@ function buildCards(data) {
 function renderAnalyticsFromCache(d) {
   const netColor = d.netProfit >= 0 ? '#27ae60' : '#c0392b';
   
-  let pieData, pieTotal;
+  let pieData, pieTotal, pieTotalLabel;
   if (d.netProfit >= 0) {
     pieData  = { 'Total Expense': d.totalExp, 'Net Profit': d.netProfit };
     pieTotal = d.totalRev;
+    pieTotalLabel = 'Total Revenue';
   } else {
     pieData  = { 'Total Revenue': d.totalRev, 'Net Loss': Math.abs(d.netProfit) };
     pieTotal = d.totalExp;
+    pieTotalLabel = 'Total Expenses';
   }
 
   const html = `
@@ -1145,7 +1147,7 @@ function renderAnalyticsFromCache(d) {
       <div class="chart-box" style="border-top:5px solid #2ecc71;">
         <h4 style="text-align:center;margin-top:0;">📈 Profitability Analysis</h4>
         <div id="chartIncomeExp" style="height:250px;"></div>
-        ${analyticsTable(pieData, pieTotal, 'Item')}
+        ${analyticsTable(pieData, pieTotal, 'Item', pieTotalLabel)}
       </div>
       <div class="chart-box">
         <h4 style="text-align:center;margin-top:0;">🍽️ Revenue Source</h4>
@@ -1212,7 +1214,7 @@ function drawDonut(dataObj, elId, colorMap) {
   new google.visualization.PieChart(el).draw(data, opts);
 }
 
-function analyticsTable(obj, total, label) {
+function analyticsTable(obj, total, label, totalLabel = 'Grand Total') {
   const filtered = Object.fromEntries(Object.entries(obj).filter(([,v]) => v > 0));
   const sorted   = Object.entries(filtered).sort((a,b) => b[1]-a[1]);
   let html = `<div style="overflow-x:auto;"><table class="perc-table">
@@ -1223,7 +1225,7 @@ function analyticsTable(obj, total, label) {
     html += `<tr><td><b>${k}</b></td><td>₹${fmt(v)}</td><td style="color:#2980b9;"><b>${pct}%</b></td></tr>`;
   });
   html += `<tr style="background:#f1f7ff;border-top:2px solid #ddd;">
-    <td><b>Grand Total</b></td><td><b>₹${fmt(total)}</b></td><td></td></tr>
+    <td><b>${totalLabel}</b></td><td><b>₹${fmt(total)}</b></td><td></td></tr>
   </table></div>`;
   return html;
 }
