@@ -558,17 +558,22 @@ function switchTab(tab, btn) {
 function fetchData() {
   hideAlert();
 
-  if (currentTab !== 'analytics') {
-    const s = document.getElementById('startDate').value;
-    const e = document.getElementById('endDate').value;
-    if (!s || !e)                  { showAlert('⚠️ Please select both From and To dates!'); return; }
-    if (new Date(s) > new Date(e)) { showAlert('🚫 End Date cannot be before Start Date!'); return; }
+  const myTab = currentTab;
+  const fetchConfig = {
+    sDate: document.getElementById('startDate').value,
+    eDate: document.getElementById('endDate').value,
+    category: document.getElementById('expCategory').value,
+    method: document.getElementById('payMethod').value,
+    transType: document.getElementById('transType').value
+  };
+
+  if (myTab !== 'analytics') {
+    if (!fetchConfig.sDate || !fetchConfig.eDate) { showAlert('⚠️ Please select both From and To dates!'); return; }
+    if (new Date(fetchConfig.sDate) > new Date(fetchConfig.eDate)) { showAlert('🚫 End Date cannot be before Start Date!'); return; }
   }
 
-  if (currentTab === 'search' && !document.getElementById('payMethod').value)
+  if (myTab === 'search' && !fetchConfig.method)
     { showAlert('⚠️ Please select a Payment Method!'); return; }
-
-  const myTab = currentTab; // capture locally — won't be overwritten by other tabs
 
   document.getElementById('content').innerHTML      = '';
   document.getElementById('dashboard').style.display = 'none';
@@ -581,8 +586,8 @@ function fetchData() {
     document.getElementById('loader').style.display = 'none';
     unlockButtons();
 
-    // Process + cache result for the tab that initiated the fetch
-    processAndCache(myTab);
+    // Process + cache result for the tab that initiated the fetch, using the exact captured state
+    processAndCache(myTab, fetchConfig);
 
     // Only render if user is still on the same tab that clicked Fetch
     if (currentTab === myTab) restoreFromCache(myTab);
@@ -656,10 +661,9 @@ function normalizeAllDates(data) {
   (data.expenses || []).forEach(e => { e.date         = normalizeDateStr(e.date); });
 }
 
-// processAndCache — reads current UI filter values, processes allData, stores in tabCache[tab]
-function processAndCache(tab) {
-  const sDate = document.getElementById('startDate').value;
-  const eDate = document.getElementById('endDate').value;
+// processAndCache — uses captured config state, processes allData, stores in tabCache[tab]
+function processAndCache(tab, config) {
+  const { sDate, eDate, category, method, transType } = config;
 
   if (tab === 'analytics') {
     // Analytics always uses full month — date pickers are hidden on this tab
@@ -693,7 +697,6 @@ function processAndCache(tab) {
 
   } else if (tab === 'expenses') {
     const expenses = filterByDate(allData.expenses || [], 'date', sDate, eDate);
-    const category = document.getElementById('expCategory').value;
     const filtered = category === 'All' ? expenses : expenses.map(d => ({
       ...d,
       entries:    d.entries.filter(e => e.type === category),
@@ -703,8 +706,6 @@ function processAndCache(tab) {
     tabCache.expenses = filtered.length ? { data: filtered, dash } : null;
 
   } else if (tab === 'search') {
-    const method    = document.getElementById('payMethod').value;
-    const transType = document.getElementById('transType').value;
     const rows      = buildSearchRows(allData.guests || [], allData.expenses || [], sDate, eDate, method, transType);
     const dash      = computeSearchDash(rows, method, transType);
     tabCache.search = rows.length ? { data: rows, dash } : null;
@@ -1118,6 +1119,15 @@ function buildCards(data) {
 // ============================================================
 function renderAnalyticsFromCache(d) {
   const netColor = d.netProfit >= 0 ? '#27ae60' : '#c0392b';
+  
+  let pieData, pieTotal;
+  if (d.netProfit >= 0) {
+    pieData  = { 'Total Expense': d.totalExp, 'Net Profit': d.netProfit };
+    pieTotal = d.totalRev;
+  } else {
+    pieData  = { 'Total Revenue': d.totalRev, 'Net Loss': Math.abs(d.netProfit) };
+    pieTotal = d.totalExp;
+  }
 
   const html = `
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:20px;">
@@ -1133,9 +1143,9 @@ function renderAnalyticsFromCache(d) {
     </div>
     <div class="chart-container">
       <div class="chart-box" style="border-top:5px solid #2ecc71;">
-        <h4 style="text-align:center;margin-top:0;">📊 Income vs Expense</h4>
+        <h4 style="text-align:center;margin-top:0;">📈 Profitability Analysis</h4>
         <div id="chartIncomeExp" style="height:250px;"></div>
-        ${analyticsTable({'Total Revenue':d.totalRev,'Total Expense':d.totalExp}, d.totalRev+d.totalExp, 'Item')}
+        ${analyticsTable(pieData, pieTotal, 'Item')}
       </div>
       <div class="chart-box">
         <h4 style="text-align:center;margin-top:0;">🍽️ Revenue Source</h4>
@@ -1166,7 +1176,16 @@ function renderAnalyticsFromCache(d) {
 }
 
 function drawAnalyticsCharts(d) {
-  drawDonut({'Total Revenue': d.totalRev, 'Total Expense': d.totalExp}, 'chartIncomeExp', {'Total Revenue':'#2980b9','Total Expense':'#e74c3c'});
+  let pieData, colorMap;
+  if (d.netProfit >= 0) {
+    pieData  = { 'Total Expense': d.totalExp, 'Net Profit': d.netProfit };
+    colorMap = { 'Total Expense': '#e74c3c', 'Net Profit': '#27ae60' };
+  } else {
+    pieData  = { 'Total Revenue': d.totalRev, 'Net Loss': Math.abs(d.netProfit) };
+    colorMap = { 'Total Revenue': '#2980b9', 'Net Loss': '#c0392b' };
+  }
+  
+  drawDonut(pieData, 'chartIncomeExp', colorMap);
   drawDonut(d.revenueSource,  'chartRevSource');
   drawDonut(d.revByMethod,    'chartRevMethod');
   drawDonut(d.expByCategory,  'chartExpCat');
