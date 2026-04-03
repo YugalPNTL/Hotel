@@ -409,10 +409,8 @@ function clearDataCache() {
 
 // Lock/unlock both Fetch and Remarks buttons together (same-tab mutual lock)
 function lockButtons() {
-  document.getElementById('fetchBtn').disabled    = true;
-  document.getElementById('fetchBtn').textContent = 'Fetching...';
-  document.getElementById('remarksBtn').disabled  = true;
-  document.getElementById('remarksBtn').textContent = 'Loading...';
+  document.getElementById('fetchBtn').disabled   = true;
+  document.getElementById('remarksBtn').disabled = true;
 }
 function unlockButtons() {
   document.getElementById('fetchBtn').disabled    = false;
@@ -528,10 +526,14 @@ function switchTab(tab, btn) {
   // If a fetch is in progress, re-enable Fetch on the new tab (Rule 2)
   // so the user can click it — but clicking won't send a new API call
   if (isFetching) {
+    document.getElementById('loader').style.display = 'none';
     document.getElementById('fetchBtn').disabled    = false;
     document.getElementById('fetchBtn').textContent = 'Fetch Data';
     document.getElementById('remarksBtn').disabled  = false;
     document.getElementById('remarksBtn').textContent = '\ud83d\udcdd Get Remarks';
+    document.getElementById('content').innerHTML    = '';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('pagin').style.display     = 'none';
     return;
   }
 
@@ -574,6 +576,7 @@ function fetchData() {
   document.getElementById('pagin').style.display     = 'none';
   document.getElementById('loader').style.display    = 'block';
   lockButtons();
+  document.getElementById('fetchBtn').textContent = 'Fetching...';
 
   function onDataReady() {
     document.getElementById('loader').style.display = 'none';
@@ -1255,6 +1258,7 @@ function hideAlert() {
 function getRemarks() {
   const remarksTab = currentTab; // capture which tab initiated this
   lockButtons();
+  document.getElementById('remarksBtn').textContent = 'Loading...';
 
   function showRemarks() {
     unlockButtons();
