@@ -1638,7 +1638,7 @@
   </div>
 
   <script>
-    var APP_SCRIPT_URL = "Phttps://script.google.com/macros/s/AKfycbxEgS29TpZLuCk__m-sadbA7bQwN8_tqIvsaj9c6yYQpYghzISkxgR468mWbC99hJXo/exec";
+    var APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYhCPpRYMVHjI-HlJVI3_h7p9i6fEs1FeDDACK8Tw/dev";
     var MAY_START = '01/05/2026';
     var MAY_END = '31/05/2026';
     var DASHBOARD_CACHE_MS = 30 * 60 * 1000;
@@ -1698,7 +1698,8 @@
           resolve(data);
         };
 
-        var url = APP_SCRIPT_URL + '?callback=' + encodeURIComponent(callbackName);
+        var joiner = APP_SCRIPT_URL.indexOf('?') === -1 ? '?' : '&';
+        var url = APP_SCRIPT_URL + joiner + 'callback=' + encodeURIComponent(callbackName) + '&_=' + Date.now();
         if (params) {
           for (var k in params) {
             if (params[k] !== undefined && params[k] !== null) {
@@ -1709,7 +1710,7 @@
 
         script.onerror = function () {
           cleanup();
-          reject(new Error('Unable to reach Apps Script web app.'));
+          reject(new Error('Unable to reach Apps Script web app. Check that APP_SCRIPT_URL is the deployed /exec URL and the web app access is set to Anyone.'));
         };
         script.src = url;
         document.head.appendChild(script);
