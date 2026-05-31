@@ -2192,6 +2192,10 @@
       return getGuestDue_(guest) > 0.005;
     }
 
+    function isNoChargeGuest_(guest) {
+      return amountValue_(guest && guest.totalCharges) <= 0.005;
+    }
+
     function getGuestDue_(guest) {
       return amountValue_(guest.totalCharges) - amountValue_(guest.totalPayments);
     }
@@ -2210,6 +2214,7 @@
       if (_revFilter === 'food-room') return _guests.filter(isFoodRoomGuest_);
       if (_revFilter === 'marriage') return _guests.filter(isMarriageGuest_);
       if (_revFilter === 'pending') return _guests.filter(isPendingGuest_);
+      if (_revFilter === 'no-charge') return _guests.filter(isNoChargeGuest_);
       return _guests;
     }
 
@@ -2246,7 +2251,8 @@
         roomOnly: allGuests.filter(isRoomOnlyGuest_).length,
         foodRoom: allGuests.filter(isFoodRoomGuest_).length,
         marriage: allGuests.filter(isMarriageGuest_).length,
-        pendingCount: allGuests.filter(isPendingGuest_).length
+        pendingCount: allGuests.filter(isPendingGuest_).length,
+        noCharge: allGuests.filter(isNoChargeGuest_).length
       };
     }
 
@@ -2266,7 +2272,8 @@
         { f: 'room-only', lbl: 'Room Only', cnt: summary.roomOnly },
         { f: 'food-room', lbl: 'Food & Room', cnt: summary.foodRoom },
         { f: 'marriage', lbl: 'Marriage', cnt: summary.marriage },
-        { f: 'pending', lbl: 'Pending', cnt: summary.pendingCount, alert: true }
+        { f: 'pending', lbl: 'Pending', cnt: summary.pendingCount, alert: true },
+        { f: 'no-charge', lbl: 'No Charge', cnt: summary.noCharge }
       ];
       var pillsHtml = pills.map(function (pill) {
         var disabled = pill.cnt === 0 && pill.f !== 'all';
