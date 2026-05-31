@@ -2890,10 +2890,10 @@
           pieHole: 0.45,
           backgroundColor: { fill: 'transparent' },
           legend: 'none',
-          pieSliceBorderColor: '#ffffff',
+          pieSliceBorderColor: 'transparent',
           chartArea: { left: '8%', top: 12, width: '84%', height: '84%' },
           colors: def.palette,
-          tooltip: { trigger: 'selection', isHtml: true },
+          tooltip: { trigger: 'focus', isHtml: true, ignoreBounds: true },
           pieSliceText: 'none',
           width: width,
           height: 220
