@@ -1696,7 +1696,7 @@
     var MAY_START = '01/05/2026';
     var MAY_END = '31/05/2026';
     var DASHBOARD_CACHE_MS = 30 * 60 * 1000;
-    var DASHBOARD_CACHE_KEY = 'raikwalMay2026DashboardCacheV3';
+    var DASHBOARD_CACHE_KEY = 'raikwalMay2026DashboardCacheV4';
 
     var _dashboardCacheData = null, _dashboardCacheFetchedAt = 0, _dashboardCachePromise = null;
     var _activeTab = 'revenue', _requestSeq = 0, _requestTokens = { r: 0, rr: 0, e: 0, er: 0, p: 0, a: 0 };
@@ -2137,18 +2137,14 @@
     function objectTotalsToArray_(totals) {
       return Object.keys(totals).map(function (key) {
         return { label: key, amt: totals[key], amount: totals[key] };
+      }).filter(function (item) {
+        return Math.abs(amountValue_(item.amt)) > 0.005;
       }).sort(function (left, right) { return right.amt - left.amt; });
     }
 
     function addTotal_(totals, label, amount) {
       label = normalizeClientString_(label) || '-';
       totals[label] = (totals[label] || 0) + amountValue_(amount);
-    }
-
-    function getDropdownPaymentMethods_() {
-      return ((_dashboardCacheData && _dashboardCacheData.dropdowns && _dashboardCacheData.dropdowns.paymentMethods) || [])
-        .map(normalizeClientString_)
-        .filter(Boolean);
     }
 
     function isMarriageGuest_(guest) {
@@ -2159,6 +2155,29 @@
         (guest && guest.charges || []).map(function (charge) { return charge.label; }).join(' ')
       ].join(' ');
       return /marriage|mariage|wedding/i.test(text);
+    }
+
+    function getGuestChargeByLabel_(guest, label) {
+      var wanted = normalizeClientString_(label).toLowerCase();
+      return (guest && guest.charges || []).reduce(function (total, charge) {
+        return normalizeClientString_(charge.label).toLowerCase() === wanted ? total + amountValue_(charge.amount) : total;
+      }, 0);
+    }
+
+    function isFoodOnlyGuest_(guest) {
+      return !isMarriageGuest_(guest) && getGuestChargeByLabel_(guest, 'Food') > 0.005 && getGuestChargeByLabel_(guest, 'Room') <= 0.005;
+    }
+
+    function isRoomOnlyGuest_(guest) {
+      return !isMarriageGuest_(guest) && getGuestChargeByLabel_(guest, 'Room') > 0.005 && getGuestChargeByLabel_(guest, 'Food') <= 0.005;
+    }
+
+    function isFoodRoomGuest_(guest) {
+      return !isMarriageGuest_(guest) && getGuestChargeByLabel_(guest, 'Food') > 0.005 && getGuestChargeByLabel_(guest, 'Room') > 0.005;
+    }
+
+    function isPendingGuest_(guest) {
+      return getGuestDue_(guest) > 0.005;
     }
 
     function getGuestDue_(guest) {
@@ -2174,10 +2193,11 @@
     }
 
     function getFilteredGuests() {
-      if (_revFilter === 'paid') return _guests.filter(isGuestPaid_);
-      if (_revFilter === 'due') return _guests.filter(function (guest) { return getGuestDue_(guest) > 0.005; });
-      if (_revFilter === 'overpaid') return _guests.filter(function (guest) { return getGuestDue_(guest) < -0.005; });
-      if (_revFilter === 'remarks') return _guests.filter(hasGuestRemarks_);
+      if (_revFilter === 'food-only') return _guests.filter(isFoodOnlyGuest_);
+      if (_revFilter === 'room-only') return _guests.filter(isRoomOnlyGuest_);
+      if (_revFilter === 'food-room') return _guests.filter(isFoodRoomGuest_);
+      if (_revFilter === 'marriage') return _guests.filter(isMarriageGuest_);
+      if (_revFilter === 'pending') return _guests.filter(isPendingGuest_);
       return _guests;
     }
 
@@ -2190,9 +2210,6 @@
     function buildRevSum(filtered, allGuests) {
       var chargeTotals = {}, paymentTotals = {};
       var totalCharges = 0, totalPayments = 0;
-      getDropdownPaymentMethods_().forEach(function (method) {
-        paymentTotals[method] = paymentTotals[method] || 0;
-      });
       filtered.forEach(function (guest) {
         var marriageRow = isMarriageGuest_(guest);
         (guest.charges || []).forEach(function (charge) {
@@ -2213,10 +2230,11 @@
         pending: Math.max(totalCharges - totalPayments, 0),
         total: allGuests.length,
         filteredTotal: filtered.length,
-        paid: allGuests.filter(isGuestPaid_).length,
-        due: allGuests.filter(function (guest) { return getGuestDue_(guest) > 0.005; }).length,
-        overpaid: allGuests.filter(function (guest) { return getGuestDue_(guest) < -0.005; }).length,
-        remarks: allGuests.filter(hasGuestRemarks_).length
+        foodOnly: allGuests.filter(isFoodOnlyGuest_).length,
+        roomOnly: allGuests.filter(isRoomOnlyGuest_).length,
+        foodRoom: allGuests.filter(isFoodRoomGuest_).length,
+        marriage: allGuests.filter(isMarriageGuest_).length,
+        pendingCount: allGuests.filter(isPendingGuest_).length
       };
     }
 
@@ -2232,10 +2250,11 @@
       var pendingClass = summary.pending > 0.005 ? 'red' : 'green';
       var pills = [
         { f: 'all', lbl: 'All', cnt: summary.total },
-        { f: 'paid', lbl: 'Paid', cnt: summary.paid },
-        { f: 'due', lbl: 'Due', cnt: summary.due, alert: true },
-        { f: 'overpaid', lbl: 'Overpaid', cnt: summary.overpaid },
-        { f: 'remarks', lbl: 'Remarks', cnt: summary.remarks }
+        { f: 'food-only', lbl: 'Food Only', cnt: summary.foodOnly },
+        { f: 'room-only', lbl: 'Room Only', cnt: summary.roomOnly },
+        { f: 'food-room', lbl: 'Food & Room', cnt: summary.foodRoom },
+        { f: 'marriage', lbl: 'Marriage', cnt: summary.marriage },
+        { f: 'pending', lbl: 'Pending', cnt: summary.pendingCount, alert: true }
       ];
       var pillsHtml = pills.map(function (pill) {
         var disabled = pill.cnt === 0 && pill.f !== 'all';
@@ -2250,6 +2269,7 @@
     }
 
     function renderChargeLines_(charges) {
+      charges = (charges || []).filter(function (charge) { return Math.abs(amountValue_(charge.amount)) > 0.005; });
       if (!charges.length) return '<div class="no-pay">No charges recorded.</div>';
       return charges.map(function (charge) {
         return '<div class="pay-row"><span class="pay-method">' + escapeHtml_(charge.label || '-') + '</span><span class="pay-amounts">' + displayAmount_(charge) + '</span></div>';
@@ -2257,6 +2277,7 @@
     }
 
     function renderPaymentLines_(payments, showDate) {
+      payments = (payments || []).filter(function (payment) { return Math.abs(amountValue_(payment.amount)) > 0.005; });
       if (!payments.length) return '<div class="no-pay">No payment recorded.</div>';
       return payments.map(function (payment) {
         var method = escapeHtml_(payment.method || '-');
@@ -2276,20 +2297,21 @@
       return '<div class="guest-card"><div class="guest-hd"><div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1"><span class="guest-name">' + escapeHtml_(guest.name || '-') + '</span>' + renderGuestStatus_(guest) + '</div><span class="guest-date-pill">' + escapeHtml_(guest.date) + '</span></div>' +
         '<div class="pay-section"><div class="pay-section-label">Charges</div>' + renderChargeLines_(guest.charges || []) + '<div class="pay-section-total"><span class="pay-section-total-lbl">Charge Total</span><span class="pay-section-total-amt rev-amt">' + fmtAmt(guest.totalCharges) + '</span></div></div>' +
         '<div class="pay-section"><div class="pay-section-label">Payments</div>' + renderPaymentLines_(guest.payments || [], true) + '<div class="pay-section-total"><span class="pay-section-total-lbl">Paid Total</span><span class="pay-section-total-amt rev-amt">' + fmtAmt(guest.totalPayments) + '</span></div></div>' +
-        '<div class="guest-total"><span class="guest-total-lbl">Balance</span><span class="guest-total-amt" style="color:' + (getGuestDue_(guest) > 0.005 ? 'var(--exp)' : 'var(--rev)') + '">' + fmtAmt(getGuestDue_(guest)) + '</span></div></div>';
+        '<div class="guest-total"><span class="guest-total-lbl">Balance</span><span class="guest-total-amt" style="color:var(--exp);font-weight:700">' + fmtAmt(getGuestDue_(guest)) + '</span></div></div>';
     }
 
-    function renderDetailLines_(items, labelKey) {
+    function renderDetailLines_(items, labelKey, totalLabel) {
+      items = (items || []).filter(function (item) { return Math.abs(amountValue_(item.amount)) > 0.005; });
       if (!items.length) return '<span class="tbl-nil">-</span>';
-      return items.map(function (item) {
+      var rows = items.map(function (item) {
         return '<div class="detail-line"><span>' + escapeHtml_(item[labelKey] || item.label || item.method || '-') + '</span><span>' + displayAmount_(item) + '</span></div>';
       }).join('');
+      return rows + '<div class="detail-line" style="border-top:1px solid var(--border);margin-top:6px;padding-top:8px;font-weight:700;color:var(--rev)"><span>' + escapeHtml_(totalLabel || 'Total') + '</span><span>' + fmtAmt(totalAmount_(items)) + '</span></div>';
     }
 
     function renderGuestTableRow(guest) {
       var due = getGuestDue_(guest);
-      var paidLine = '<div style="font-size:12px;color:var(--muted);margin-top:4px">Paid: <strong>' + fmtAmt(guest.totalPayments) + '</strong></div>';
-      return '<tr><td class="tbl-date-cell">' + escapeHtml_(guest.date) + '</td><td><div class="tbl-name-bold">' + escapeHtml_(guest.name || '-') + '</div>' + paidLine + '</td><td>' + renderDetailLines_(guest.charges || [], 'label') + '</td><td>' + renderDetailLines_(guest.payments || [], 'method') + '</td><td class="right ' + (due > 0.005 ? 'exp-amt' : 'rev-amt') + '">' + fmtAmt(due) + '</td></tr>';
+      return '<tr><td class="tbl-date-cell">' + escapeHtml_(guest.date) + '</td><td><div class="tbl-name-bold">' + escapeHtml_(guest.name || '-') + '</div></td><td>' + renderDetailLines_(guest.charges || [], 'label', 'Charges Total') + '</td><td>' + renderDetailLines_(guest.payments || [], 'method', 'Payments Total') + '</td><td class="right exp-amt" style="font-weight:700">' + fmtAmt(due) + '</td></tr>';
     }
 
     function renderGuestRemarkTableRow(guest) {
