@@ -527,6 +527,60 @@
       grid-template-columns: 1fr;
     }
 
+    .summary-kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media(min-width:680px) {
+      .summary-kpi-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .summary-kpi+.summary-kpi {
+        border-left: 1px solid var(--border);
+      }
+    }
+
+    .summary-kpi {
+      padding: 22px 24px;
+      background: var(--surface);
+    }
+
+    .summary-kpi+.summary-kpi {
+      border-top: 1px solid var(--border);
+    }
+
+    @media(min-width:680px) {
+      .summary-kpi+.summary-kpi {
+        border-top: none;
+      }
+    }
+
+    .summary-kpi-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text2);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .summary-kpi-value {
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .summary-kpi-value.green {
+      color: var(--rev-dark);
+    }
+
+    .summary-kpi-value.red {
+      color: var(--exp-dark);
+    }
+
     @media(min-width:600px) {
       .summary-grids {
         grid-template-columns: 1fr 1fr;
@@ -1642,7 +1696,7 @@
     var MAY_START = '01/05/2026';
     var MAY_END = '31/05/2026';
     var DASHBOARD_CACHE_MS = 30 * 60 * 1000;
-    var DASHBOARD_CACHE_KEY = 'raikwalMay2026DashboardCacheV1';
+    var DASHBOARD_CACHE_KEY = 'raikwalMay2026DashboardCacheV2';
 
     var _dashboardCacheData = null, _dashboardCacheFetchedAt = 0, _dashboardCachePromise = null;
     var _activeTab = 'revenue', _requestSeq = 0, _requestTokens = { r: 0, rr: 0, e: 0, er: 0, p: 0, a: 0 };
@@ -1974,6 +2028,7 @@
         checkoutDate: guest.checkoutDate || guest.date || '',
         name: guest.name || '',
         remarks: guest.remarks || '',
+        isMarriage: !!guest.isMarriage,
         charges: charges,
         payments: payments,
         totalCharges: totalCharges,
@@ -2088,6 +2143,22 @@
       totals[label] = (totals[label] || 0) + amountValue_(amount);
     }
 
+    function getDropdownPaymentMethods_() {
+      return ((_dashboardCacheData && _dashboardCacheData.dropdowns && _dashboardCacheData.dropdowns.paymentMethods) || [])
+        .map(normalizeClientString_)
+        .filter(Boolean);
+    }
+
+    function isMarriageGuest_(guest) {
+      if (guest && guest.isMarriage) return true;
+      var text = [
+        guest && guest.name,
+        guest && guest.remarks,
+        (guest && guest.charges || []).map(function (charge) { return charge.label; }).join(' ')
+      ].join(' ');
+      return /marriage|mariage|wedding/i.test(text);
+    }
+
     function getGuestDue_(guest) {
       return amountValue_(guest.totalCharges) - amountValue_(guest.totalPayments);
     }
@@ -2117,9 +2188,14 @@
     function buildRevSum(filtered, allGuests) {
       var chargeTotals = {}, paymentTotals = {};
       var totalCharges = 0, totalPayments = 0;
+      getDropdownPaymentMethods_().forEach(function (method) {
+        paymentTotals[method] = paymentTotals[method] || 0;
+      });
       filtered.forEach(function (guest) {
+        var marriageRow = isMarriageGuest_(guest);
         (guest.charges || []).forEach(function (charge) {
-          addTotal_(chargeTotals, charge.label, charge.amount);
+          var chargeLabel = marriageRow && normalizeClientString_(charge.label).toLowerCase() === 'room' ? 'Marriage' : charge.label;
+          addTotal_(chargeTotals, chargeLabel, charge.amount);
           totalCharges += amountValue_(charge.amount);
         });
         (guest.payments || []).forEach(function (payment) {
@@ -2132,6 +2208,7 @@
         methods: objectTotalsToArray_(paymentTotals),
         totalCharges: totalCharges,
         totalPayments: totalPayments,
+        pending: Math.max(totalCharges - totalPayments, 0),
         total: allGuests.length,
         filteredTotal: filtered.length,
         paid: allGuests.filter(isGuestPaid_).length,
@@ -2152,6 +2229,7 @@
     function renderRevSummary(summary) {
       var labels = { all: 'All Guests', paid: 'Fully Paid', due: 'Balance Due', overpaid: 'Overpaid', remarks: 'With Remarks' };
       var sub = _revFilter === 'all' ? 'Selected period' : 'Filtered: ' + labels[_revFilter] + ' (' + summary.filteredTotal + ' of ' + summary.total + ')';
+      var pendingClass = summary.pending > 0.005 ? 'red' : 'green';
       var pills = [
         { f: 'all', lbl: 'All', cnt: summary.total },
         { f: 'paid', lbl: 'Paid', cnt: summary.paid },
@@ -2165,7 +2243,8 @@
       }).join('');
 
       byId('r-sum').innerHTML =
-        '<div class="rev-banner green-bg"><div><span class="rev-eyebrow">Total Revenue</span><span class="rev-title">' + escapeHtml_(sub) + '</span></div><div class="rev-amount green">' + fmtAmt(summary.totalCharges) + '</div></div>' +
+        '<div class="rev-banner green-bg"><div><span class="rev-eyebrow">Revenue Summary</span><span class="rev-title">' + escapeHtml_(sub) + '</span></div></div>' +
+        '<div class="summary-kpi-grid"><div class="summary-kpi"><div class="summary-kpi-label">Total Revenue</div><div class="summary-kpi-value green">' + fmtAmt(summary.totalCharges) + '</div></div><div class="summary-kpi"><div class="summary-kpi-label">Payment Received</div><div class="summary-kpi-value green">' + fmtAmt(summary.totalPayments) + '</div></div><div class="summary-kpi"><div class="summary-kpi-label">Pending</div><div class="summary-kpi-value ' + pendingClass + '">' + fmtAmt(summary.pending) + '</div></div></div>' +
         '<div class="summary-grids"><div class="summary-col"><div class="sum-col-title">By Charge Type</div>' + renderSummaryRows_(summary.charges, 'green') + '<div class="sum-total-row"><span class="sum-total-label">Total Charges</span><span class="sum-total-amt green">' + fmtAmt(summary.totalCharges) + '</span></div></div>' +
         '<div class="summary-col"><div class="sum-col-title">By Payment Method</div>' + renderSummaryRows_(summary.methods, 'green') + '<div class="sum-total-row"><span class="sum-total-label">Total Paid</span><span class="sum-total-amt green">' + fmtAmt(summary.totalPayments) + '</span></div></div></div>' +
         '<div class="rev-stats-row">' + pillsHtml + '</div>';
