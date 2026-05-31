@@ -1271,14 +1271,6 @@
       font-weight: 500;
     }
 
-    .google-visualization-tooltip {
-      border: 1px solid var(--border) !important;
-      border-radius: var(--r-sm) !important;
-      box-shadow: 0 4px 12px rgba(17, 24, 39, 0.14) !important;
-      background: var(--surface) !important;
-      overflow: hidden !important;
-    }
-
     .pagination-bar {
       display: flex;
       align-items: center;
@@ -2887,11 +2879,11 @@
         var dt = new google.visualization.DataTable();
         dt.addColumn('string', 'Label');
         dt.addColumn('number', 'Amount');
-        dt.addColumn({ type: 'string', role: 'tooltip', p: { html: true } });
+        dt.addColumn({ type: 'string', role: 'tooltip' });
         var total = def.items.reduce(function (sum, item) { return sum + amountValue_(item.amount); }, 0);
         def.items.forEach(function (item) {
           var percentage = total > 0 ? ((amountValue_(item.amount) / total) * 100).toFixed(1) : '0.0';
-          var tooltip = '<div style="padding:10px 12px;font-family:Inter,sans-serif;font-size:13px;color:#111827;white-space:nowrap"><div style="font-weight:700;margin-bottom:4px">' + escapeHtml_(item.label) + '</div><div>' + fmtAmt(item.amount) + '</div><div style="color:#6b7280;margin-top:2px">' + percentage + '%</div></div>';
+          var tooltip = item.label + '\n' + fmtAmt(item.amount) + '\n' + percentage + '%';
           dt.addRow([item.label, item.amount, tooltip]);
         });
         new google.visualization.PieChart(el).draw(dt, {
@@ -2901,7 +2893,7 @@
           pieSliceBorderColor: 'transparent',
           chartArea: { left: '8%', top: 12, width: '84%', height: '84%' },
           colors: def.palette,
-          tooltip: { trigger: 'focus', isHtml: true, ignoreBounds: true },
+          tooltip: { trigger: 'focus' },
           pieSliceText: 'none',
           width: width,
           height: 220
