@@ -832,6 +832,20 @@
       text-align: right;
     }
 
+    .data-tbl td.rev-amt,
+    .data-tbl td .rev-amt,
+    .detail-line .rev-amt {
+      color: var(--rev);
+      font-weight: 700;
+    }
+
+    .data-tbl td.exp-amt,
+    .data-tbl td .exp-amt,
+    .detail-line .exp-amt {
+      color: var(--exp);
+      font-weight: 700;
+    }
+
     .guest-list,
     .exp-list {
       display: flex;
@@ -2296,7 +2310,7 @@
     function renderGuestCard(guest) {
       var due = getGuestDue_(guest);
       var balanceHtml = due > 0.005 ? fmtAmt(due) : '';
-      return '<div class="guest-card"><div class="guest-hd"><div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1"><span class="guest-name">' + escapeHtml_(guest.name || '-') + '</span>' + renderGuestStatus_(guest) + '</div><span class="guest-date-pill">' + escapeHtml_(guest.date) + '</span></div>' +
+      return '<div class="guest-card"><div class="guest-hd"><div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1"><span class="guest-name">' + escapeHtml_(guest.name || '-') + '</span></div><span class="guest-date-pill">' + escapeHtml_(guest.date) + '</span></div>' +
         '<div class="pay-section"><div class="pay-section-label">Charges</div>' + renderChargeLines_(guest.charges || []) + '<div class="pay-section-total"><span class="pay-section-total-lbl">Charge Total</span><span class="pay-section-total-amt rev-amt">' + fmtAmt(guest.totalCharges) + '</span></div></div>' +
         '<div class="pay-section"><div class="pay-section-label">Payments</div>' + renderPaymentLines_(guest.payments || [], true) + '<div class="pay-section-total"><span class="pay-section-total-lbl">Paid Total</span><span class="pay-section-total-amt rev-amt">' + fmtAmt(guest.totalPayments) + '</span></div></div>' +
         '<div class="guest-total"><span class="guest-total-lbl">Balance</span><span class="guest-total-amt" style="color:var(--exp);font-weight:700">' + balanceHtml + '</span></div></div>';
