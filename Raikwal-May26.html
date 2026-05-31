@@ -1247,8 +1247,34 @@
       z-index: 3;
     }
 
+    @media(min-width:768px) {
+      .pie-center-tooltip {
+        min-width: 162px;
+        padding: 14px 16px;
+        border-color: var(--border-strong);
+        background: var(--surface);
+        box-shadow: 0 4px 10px rgba(17, 24, 39, 0.16);
+        font-size: 14px;
+        line-height: 1.4;
+        text-align: left;
+      }
+    }
+
     .pie-center-tooltip.show {
       opacity: 1;
+    }
+
+    .pie-center-tooltip-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pie-center-tooltip-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
 
     .pie-center-tooltip-name {
@@ -1258,13 +1284,15 @@
 
     .pie-center-tooltip-amount {
       display: block;
-      color: var(--text2);
-      font-weight: 600;
+      margin-top: 6px;
+      font-size: 16px;
+      font-weight: 700;
     }
 
     .pie-center-tooltip-pct {
       display: block;
       color: var(--muted);
+      margin-top: 4px;
     }
 
     .a-tbl {
@@ -2943,7 +2971,7 @@
         el.appendChild(tooltip);
         google.visualization.events.addListener(chart, 'onmouseover', function (event) {
           if (typeof event.row !== 'number') return;
-          showPieTooltip_(tooltip, def.items[event.row], total);
+          queuePieTooltip_(tooltip, def.items[event.row], total, def.palette[event.row % def.palette.length]);
         });
         google.visualization.events.addListener(chart, 'onmouseout', function () {
           hidePieTooltip_(tooltip);
@@ -2954,23 +2982,32 @@
             hidePieTooltip_(tooltip, 0);
             return;
           }
-          showPieTooltip_(tooltip, def.items[selection[0].row], total);
+          showPieTooltip_(tooltip, def.items[selection[0].row], total, def.palette[selection[0].row % def.palette.length]);
         });
       });
     }
 
-    function showPieTooltip_(tooltip, item, total) {
+    function queuePieTooltip_(tooltip, item, total, color) {
       clearTimeout(tooltip._hideTimer);
+      clearTimeout(tooltip._showTimer);
+      tooltip._showTimer = setTimeout(function () {
+        showPieTooltip_(tooltip, item, total, color);
+      }, 45);
+    }
+
+    function showPieTooltip_(tooltip, item, total, color) {
+      clearTimeout(tooltip._showTimer);
       var percentage = total > 0 ? ((amountValue_(item.amount) / total) * 100).toFixed(1) : '0.0';
-      tooltip.innerHTML = '<span class="pie-center-tooltip-name">' + escapeHtml_(item.label) + '</span><span class="pie-center-tooltip-amount">' + fmtAmt(item.amount) + '</span><span class="pie-center-tooltip-pct">' + percentage + '%</span>';
+      tooltip.innerHTML = '<span class="pie-center-tooltip-head"><span class="pie-center-tooltip-dot" style="background:' + color + '"></span><span class="pie-center-tooltip-name">' + escapeHtml_(item.label) + '</span></span><span class="pie-center-tooltip-amount" style="color:' + color + '">' + fmtAmt(item.amount) + '</span><span class="pie-center-tooltip-pct">' + percentage + '%</span>';
       tooltip.classList.add('show');
     }
 
     function hidePieTooltip_(tooltip, delay) {
+      clearTimeout(tooltip._showTimer);
       clearTimeout(tooltip._hideTimer);
       tooltip._hideTimer = setTimeout(function () {
         tooltip.classList.remove('show');
-      }, delay === undefined ? 140 : delay);
+      }, delay === undefined ? 160 : delay);
     }
 
     function openRemarksModal_(title, bodyHtml) {
