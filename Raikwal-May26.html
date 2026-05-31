@@ -2921,26 +2921,56 @@
         var dt = new google.visualization.DataTable();
         dt.addColumn('string', 'Label');
         dt.addColumn('number', 'Amount');
-        dt.addColumn({ type: 'string', role: 'tooltip' });
         var total = def.items.reduce(function (sum, item) { return sum + amountValue_(item.amount); }, 0);
         def.items.forEach(function (item) {
-          var percentage = total > 0 ? ((amountValue_(item.amount) / total) * 100).toFixed(1) : '0.0';
-          var tooltip = item.label + '\n' + fmtAmt(item.amount) + '\n' + percentage + '%';
-          dt.addRow([item.label, item.amount, tooltip]);
+          dt.addRow([item.label, item.amount]);
         });
-        new google.visualization.PieChart(el).draw(dt, {
+        var chart = new google.visualization.PieChart(el);
+        chart.draw(dt, {
           pieHole: 0.45,
           backgroundColor: { fill: 'transparent' },
           legend: 'none',
           pieSliceBorderColor: 'transparent',
           chartArea: { left: '8%', top: 12, width: '84%', height: '84%' },
           colors: def.palette,
-          tooltip: { trigger: 'focus' },
+          tooltip: { trigger: 'none' },
           pieSliceText: 'none',
           width: width,
           height: 220
         });
+        var tooltip = document.createElement('div');
+        tooltip.className = 'pie-center-tooltip';
+        el.appendChild(tooltip);
+        google.visualization.events.addListener(chart, 'onmouseover', function (event) {
+          if (typeof event.row !== 'number') return;
+          showPieTooltip_(tooltip, def.items[event.row], total);
+        });
+        google.visualization.events.addListener(chart, 'onmouseout', function () {
+          hidePieTooltip_(tooltip);
+        });
+        google.visualization.events.addListener(chart, 'select', function () {
+          var selection = chart.getSelection();
+          if (!selection.length || typeof selection[0].row !== 'number') {
+            hidePieTooltip_(tooltip, 0);
+            return;
+          }
+          showPieTooltip_(tooltip, def.items[selection[0].row], total);
+        });
       });
+    }
+
+    function showPieTooltip_(tooltip, item, total) {
+      clearTimeout(tooltip._hideTimer);
+      var percentage = total > 0 ? ((amountValue_(item.amount) / total) * 100).toFixed(1) : '0.0';
+      tooltip.innerHTML = '<span class="pie-center-tooltip-name">' + escapeHtml_(item.label) + '</span><span class="pie-center-tooltip-amount">' + fmtAmt(item.amount) + '</span><span class="pie-center-tooltip-pct">' + percentage + '%</span>';
+      tooltip.classList.add('show');
+    }
+
+    function hidePieTooltip_(tooltip, delay) {
+      clearTimeout(tooltip._hideTimer);
+      tooltip._hideTimer = setTimeout(function () {
+        tooltip.classList.remove('show');
+      }, delay === undefined ? 140 : delay);
     }
 
     function openRemarksModal_(title, bodyHtml) {
