@@ -833,15 +833,13 @@
     }
 
     .data-tbl td.rev-amt,
-    .data-tbl td .rev-amt,
-    .detail-line .rev-amt {
+    .data-tbl td .rev-amt {
       color: var(--rev);
       font-weight: 700;
     }
 
     .data-tbl td.exp-amt,
-    .data-tbl td .exp-amt,
-    .detail-line .exp-amt {
+    .data-tbl td .exp-amt {
       color: var(--exp);
       font-weight: 700;
     }
@@ -2286,7 +2284,7 @@
       charges = (charges || []).filter(function (charge) { return Math.abs(amountValue_(charge.amount)) > 0.005; });
       if (!charges.length) return '<div class="no-pay">No charges recorded.</div>';
       return charges.map(function (charge) {
-        return '<div class="pay-row"><span class="pay-method">' + escapeHtml_(charge.label || '-') + '</span><span class="pay-amounts rev-amt">' + displayAmount_(charge) + '</span></div>';
+        return '<div class="pay-row"><span class="pay-method">' + escapeHtml_(charge.label || '-') + '</span><span class="pay-amounts">' + displayAmount_(charge) + '</span></div>';
       }).join('');
     }
 
@@ -2296,7 +2294,7 @@
       return payments.map(function (payment) {
         var method = escapeHtml_(payment.method || '-');
         if (showDate && payment.date) method += ' <span style="color:var(--muted2)">(' + escapeHtml_(payment.date) + ')</span>';
-        return '<div class="pay-row"><span class="pay-method">' + method + '</span><span class="pay-amounts rev-amt">' + displayAmount_(payment) + '</span></div>';
+        return '<div class="pay-row"><span class="pay-method">' + method + '</span><span class="pay-amounts">' + displayAmount_(payment) + '</span></div>';
       }).join('');
     }
 
@@ -2320,9 +2318,9 @@
       items = (items || []).filter(function (item) { return Math.abs(amountValue_(item.amount)) > 0.005; });
       if (!items.length) return '<span class="tbl-nil">-</span>';
       var rows = items.map(function (item) {
-        return '<div class="detail-line"><span>' + escapeHtml_(item[labelKey] || item.label || item.method || '-') + '</span><span class="rev-amt" style="font-weight:700">' + displayAmount_(item) + '</span></div>';
+        return '<div class="detail-line"><span>' + escapeHtml_(item[labelKey] || item.label || item.method || '-') + '</span><span>' + displayAmount_(item) + '</span></div>';
       }).join('');
-      return rows + '<div class="detail-line" style="border-top:1px solid var(--border);margin-top:6px;padding-top:8px;font-weight:700"><span class="rev-amt">' + escapeHtml_(totalLabel || 'Total') + '</span><span class="rev-amt">' + fmtAmt(totalAmount_(items)) + '</span></div>';
+      return rows + '<div class="detail-line" style="border-top:1px solid var(--border);margin-top:6px;padding-top:8px"><span>' + escapeHtml_(totalLabel || 'Total') + '</span><span class="rev-amt">' + fmtAmt(totalAmount_(items)) + '</span></div>';
     }
 
     function renderGuestTableRow(guest) {
