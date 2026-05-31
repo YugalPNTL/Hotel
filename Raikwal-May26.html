@@ -1696,7 +1696,7 @@
     var MAY_START = '01/05/2026';
     var MAY_END = '31/05/2026';
     var DASHBOARD_CACHE_MS = 30 * 60 * 1000;
-    var DASHBOARD_CACHE_KEY = 'raikwalMay2026DashboardCacheV2';
+    var DASHBOARD_CACHE_KEY = 'raikwalMay2026DashboardCacheV3';
 
     var _dashboardCacheData = null, _dashboardCacheFetchedAt = 0, _dashboardCachePromise = null;
     var _activeTab = 'revenue', _requestSeq = 0, _requestTokens = { r: 0, rr: 0, e: 0, er: 0, p: 0, a: 0 };
@@ -2020,6 +2020,8 @@
           amount: hasAmount_(payment.amount) ? Number(payment.amount) : null,
           amountText: payment.amountText || ''
         };
+      }).filter(function (payment) {
+        return normalizeClientString_(payment.method) !== '-' || amountValue_(payment.amount) !== 0;
       });
       var totalCharges = totalAmount_(charges);
       var totalPayments = totalAmount_(payments);
@@ -2227,8 +2229,6 @@
     }
 
     function renderRevSummary(summary) {
-      var labels = { all: 'All Guests', paid: 'Fully Paid', due: 'Balance Due', overpaid: 'Overpaid', remarks: 'With Remarks' };
-      var sub = _revFilter === 'all' ? 'Selected period' : 'Filtered: ' + labels[_revFilter] + ' (' + summary.filteredTotal + ' of ' + summary.total + ')';
       var pendingClass = summary.pending > 0.005 ? 'red' : 'green';
       var pills = [
         { f: 'all', lbl: 'All', cnt: summary.total },
@@ -2243,7 +2243,6 @@
       }).join('');
 
       byId('r-sum').innerHTML =
-        '<div class="rev-banner green-bg"><div><span class="rev-eyebrow">Revenue Summary</span><span class="rev-title">' + escapeHtml_(sub) + '</span></div></div>' +
         '<div class="summary-kpi-grid"><div class="summary-kpi"><div class="summary-kpi-label">Total Revenue</div><div class="summary-kpi-value green">' + fmtAmt(summary.totalCharges) + '</div></div><div class="summary-kpi"><div class="summary-kpi-label">Payment Received</div><div class="summary-kpi-value green">' + fmtAmt(summary.totalPayments) + '</div></div><div class="summary-kpi"><div class="summary-kpi-label">Pending</div><div class="summary-kpi-value ' + pendingClass + '">' + fmtAmt(summary.pending) + '</div></div></div>' +
         '<div class="summary-grids"><div class="summary-col"><div class="sum-col-title">By Charge Type</div>' + renderSummaryRows_(summary.charges, 'green') + '<div class="sum-total-row"><span class="sum-total-label">Total Charges</span><span class="sum-total-amt green">' + fmtAmt(summary.totalCharges) + '</span></div></div>' +
         '<div class="summary-col"><div class="sum-col-title">By Payment Method</div>' + renderSummaryRows_(summary.methods, 'green') + '<div class="sum-total-row"><span class="sum-total-label">Total Paid</span><span class="sum-total-amt green">' + fmtAmt(summary.totalPayments) + '</span></div></div></div>' +
