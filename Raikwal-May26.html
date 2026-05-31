@@ -1223,6 +1223,48 @@
     .a-chart-slot {
       width: min(100%, 320px);
       height: 220px;
+      position: relative;
+    }
+
+    .pie-center-tooltip {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 112px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 3px 10px rgba(17, 24, 39, 0.12);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.35;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.12s ease;
+      z-index: 3;
+    }
+
+    .pie-center-tooltip.show {
+      opacity: 1;
+    }
+
+    .pie-center-tooltip-name {
+      display: block;
+      font-weight: 700;
+    }
+
+    .pie-center-tooltip-amount {
+      display: block;
+      color: var(--text2);
+      font-weight: 600;
+    }
+
+    .pie-center-tooltip-pct {
+      display: block;
+      color: var(--muted);
     }
 
     .a-tbl {
