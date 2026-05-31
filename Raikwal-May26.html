@@ -2196,6 +2196,32 @@
       return amountValue_(guest && guest.totalCharges) <= 0.005;
     }
 
+    function isOtherChargeGuest_(guest) {
+      return amountValue_(guest && guest.totalCharges) > 0.005 &&
+        !isMarriageGuest_(guest) &&
+        getGuestChargeByLabel_(guest, 'Food') <= 0.005 &&
+        getGuestChargeByLabel_(guest, 'Room') <= 0.005;
+    }
+
+    function getGuestOtherChargeNames_(guest) {
+      var standard = {
+        room: true,
+        food: true,
+        'extra mattress': true,
+        heater: true,
+        marriage: true
+      };
+      var seen = {};
+      return (guest && guest.charges || []).reduce(function (names, charge) {
+        var label = normalizeClientString_(charge.label);
+        var key = label.toLowerCase();
+        if (!label || standard[key] || seen[key] || Math.abs(amountValue_(charge.amount)) <= 0.005) return names;
+        seen[key] = true;
+        names.push(label);
+        return names;
+      }, []);
+    }
+
     function getGuestDue_(guest) {
       return amountValue_(guest.totalCharges) - amountValue_(guest.totalPayments);
     }
@@ -2215,6 +2241,7 @@
       if (_revFilter === 'marriage') return _guests.filter(isMarriageGuest_);
       if (_revFilter === 'pending') return _guests.filter(isPendingGuest_);
       if (_revFilter === 'no-charge') return _guests.filter(isNoChargeGuest_);
+      if (_revFilter === 'other-charge') return _guests.filter(isOtherChargeGuest_);
       return _guests;
     }
 
@@ -2252,7 +2279,8 @@
         foodRoom: allGuests.filter(isFoodRoomGuest_).length,
         marriage: allGuests.filter(isMarriageGuest_).length,
         pendingCount: allGuests.filter(isPendingGuest_).length,
-        noCharge: allGuests.filter(isNoChargeGuest_).length
+        noCharge: allGuests.filter(isNoChargeGuest_).length,
+        otherCharge: allGuests.filter(isOtherChargeGuest_).length
       };
     }
 
@@ -2273,7 +2301,8 @@
         { f: 'food-room', lbl: 'Food & Room', cnt: summary.foodRoom },
         { f: 'marriage', lbl: 'Marriage', cnt: summary.marriage },
         { f: 'pending', lbl: 'Pending', cnt: summary.pendingCount, alert: true },
-        { f: 'no-charge', lbl: 'No Charge', cnt: summary.noCharge }
+        { f: 'no-charge', lbl: 'No Charge', cnt: summary.noCharge },
+        { f: 'other-charge', lbl: 'Other Charge', cnt: summary.otherCharge }
       ];
       var pillsHtml = pills.map(function (pill) {
         var disabled = pill.cnt === 0 && pill.f !== 'all';
@@ -2315,7 +2344,9 @@
     function renderGuestCard(guest) {
       var due = getGuestDue_(guest);
       var balanceHtml = due > 0.005 ? fmtAmt(due) : '';
-      return '<div class="guest-card"><div class="guest-hd"><div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1"><span class="guest-name">' + escapeHtml_(guest.name || '-') + '</span></div><span class="guest-date-pill">' + escapeHtml_(guest.date) + '</span></div>' +
+      var otherNames = getGuestOtherChargeNames_(guest);
+      var otherHtml = otherNames.length ? '<div style="font-size:12px;color:var(--muted);font-weight:500;margin-top:2px">' + escapeHtml_(otherNames.join(', ')) + '</div>' : '';
+      return '<div class="guest-card"><div class="guest-hd"><div style="min-width:0;flex:1"><span class="guest-name">' + escapeHtml_(guest.name || '-') + '</span>' + otherHtml + '</div><span class="guest-date-pill">' + escapeHtml_(guest.date) + '</span></div>' +
         '<div class="pay-section"><div class="pay-section-label">Charges</div>' + renderChargeLines_(guest.charges || []) + '<div class="pay-section-total"><span class="pay-section-total-lbl">Charge Total</span><span class="pay-section-total-amt rev-amt">' + fmtAmt(guest.totalCharges) + '</span></div></div>' +
         '<div class="pay-section"><div class="pay-section-label">Payments</div>' + renderPaymentLines_(guest.payments || [], true) + '<div class="pay-section-total"><span class="pay-section-total-lbl">Paid Total</span><span class="pay-section-total-amt rev-amt">' + fmtAmt(guest.totalPayments) + '</span></div></div>' +
         '<div class="guest-total"><span class="guest-total-lbl">Balance</span><span class="guest-total-amt" style="color:var(--exp);font-weight:700">' + balanceHtml + '</span></div></div>';
@@ -2333,7 +2364,9 @@
     function renderGuestTableRow(guest) {
       var due = getGuestDue_(guest);
       var balanceHtml = due > 0.005 ? fmtAmt(due) : '';
-      return '<tr><td class="tbl-date-cell">' + escapeHtml_(guest.date) + '</td><td><div class="tbl-name-bold">' + escapeHtml_(guest.name || '-') + '</div></td><td>' + renderDetailLines_(guest.charges || [], 'label', 'Charges Total') + '</td><td>' + renderDetailLines_(guest.payments || [], 'method', 'Payments Total') + '</td><td class="right exp-amt" style="font-weight:700">' + balanceHtml + '</td></tr>';
+      var otherNames = getGuestOtherChargeNames_(guest);
+      var otherHtml = otherNames.length ? '<div style="font-size:12px;color:var(--muted);margin-top:4px">' + escapeHtml_(otherNames.join(', ')) + '</div>' : '';
+      return '<tr><td class="tbl-date-cell">' + escapeHtml_(guest.date) + '</td><td><div class="tbl-name-bold">' + escapeHtml_(guest.name || '-') + '</div>' + otherHtml + '</td><td>' + renderDetailLines_(guest.charges || [], 'label', 'Charges Total') + '</td><td>' + renderDetailLines_(guest.payments || [], 'method', 'Payments Total') + '</td><td class="right exp-amt" style="font-weight:700">' + balanceHtml + '</td></tr>';
     }
 
     function renderGuestRemarkTableRow(guest) {
