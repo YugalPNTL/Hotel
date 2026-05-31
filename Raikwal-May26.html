@@ -1595,11 +1595,11 @@
           <div class="fg-3">
             <div class="field">
               <label for="p-sd">From</label>
-              <input class="date-input" type="date" id="p-sd" value="2026-05-01" min="2026-05-01" max="2026-05-31" onclick="tryShowPicker(this)">
+              <input class="date-input" type="date" id="p-sd" value="2026-04-01" min="2026-04-01" max="2026-08-31" onclick="tryShowPicker(this)">
             </div>
             <div class="field">
               <label for="p-ed">To</label>
-              <input class="date-input" type="date" id="p-ed" value="2026-05-31" min="2026-05-01" max="2026-05-31" onclick="tryShowPicker(this)">
+              <input class="date-input" type="date" id="p-ed" value="2026-08-31" min="2026-04-01" max="2026-08-31" onclick="tryShowPicker(this)">
             </div>
             <div class="field">
               <label for="p-method">Payment Method</label>
@@ -2887,6 +2887,7 @@
           pieSliceBorderColor: '#ffffff',
           chartArea: { left: '8%', top: 12, width: '84%', height: '84%' },
           colors: def.palette,
+          tooltip: { trigger: 'selection' },
           pieSliceText: 'none',
           width: width,
           height: 220
