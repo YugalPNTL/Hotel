@@ -1952,8 +1952,13 @@
 
     function syncSelectOptions_(selectId, baseCount, values, dedupe) {
       var select = byId(selectId);
+      var selectedValue = select.value;
       while (select.options.length > baseCount) select.remove(baseCount);
       appendOptions(select, values || [], dedupe);
+      var hasSelectedValue = Array.prototype.some.call(select.options, function (option) {
+        return option.value === selectedValue;
+      });
+      if (hasSelectedValue) select.value = selectedValue;
     }
 
     function syncDashboardDropdowns_() {
