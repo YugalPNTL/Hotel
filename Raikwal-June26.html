@@ -1,0 +1,3178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raikwal May 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --surface: #ffffff;
+      --surface2: #f9fafb;
+      --surface3: #f3f4f6;
+      --surface4: #e5e7eb;
+      --border: #e5e7eb;
+      --border-strong: #d1d5db;
+      --border2: #f3f4f6;
+      --text: #111827;
+      --text2: #374151;
+      --muted: #6b7280;
+      --muted2: #9ca3af;
+      --gold: #4f46e5;
+      --gold-l: #6366f1;
+      --gold-soft: rgba(79, 70, 229, 0.1);
+      --rev: #059669;
+      --rev-dark: #047857;
+      --rev-bg: #ecfdf5;
+      --rev-bdr: #a7f3d0;
+      --exp: #dc2626;
+      --exp-dark: #b91c1c;
+      --exp-bg: #fef2f2;
+      --exp-bdr: #fecaca;
+      --marriage: #d97706;
+      --marriage-bg: #fffbeb;
+      --marriage-bdr: #fde68a;
+      --marriage-dark: #b45309;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --danger-bdr: #fecaca;
+      --table-head-top: 60px;
+      --r: 12px;
+      --r-sm: 8px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: 64px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .tabs {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-start;
+      padding: 0 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      position: sticky;
+      top: 65px;
+      z-index: 199;
+      scrollbar-width: none;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media(min-width:600px) {
+      .tabs {
+        justify-content: center;
+      }
+    }
+
+    .tab-btn {
+      position: relative;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 14px 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      flex: 1;
+    }
+
+    @media(min-width:600px) {
+      .tab-btn {
+        font-size: 14px;
+        padding: 16px 20px;
+        flex: none;
+      }
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      color: var(--gold);
+    }
+
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      border-radius: 3px 3px 0 0;
+      background: transparent;
+      transition: background 0.2s ease;
+    }
+
+    .tab-btn.active::after {
+      background: var(--gold);
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 16px 0;
+    }
+
+    @media(min-width:640px) {
+      .page {
+        padding: 40px 32px 0;
+      }
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .card,
+    .summary-card,
+    .tbl-wrap,
+    .a-kpi-card,
+    .a-chart-card,
+    .guest-card,
+    .exp-day-card,
+    .pday-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .card {
+      margin-bottom: 24px;
+    }
+
+    .card-head {
+      padding: 16px 20px;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text);
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      border-radius: var(--r) var(--r) 0 0;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .inline-card {
+      margin-top: 20px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      background: var(--surface2);
+    }
+
+    .inline-card .fg-2 {
+      grid-template-columns: 1fr;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 0;
+    }
+
+    @media(min-width:700px) {
+      .inline-card .fg-2 {
+        grid-template-columns: 1fr auto;
+      }
+
+      .inline-card .btn-fetch {
+        width: auto;
+        min-width: 160px;
+      }
+    }
+
+    .inline-note {
+      font-size: 14px;
+      color: var(--text2);
+      font-weight: 500;
+    }
+
+    .fg-2,
+    .fg-3 {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .fg-2,
+    .fg-3 {
+      grid-template-columns: 1fr;
+    }
+
+    @media(min-width:500px) {
+
+      .fg-2,
+      .fg-3 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media(min-width:760px) {
+      .fg-2 {
+        grid-template-columns: 1fr 1fr auto;
+        align-items: end;
+        margin-bottom: 0;
+      }
+
+      .fg-3 {
+        grid-template-columns: 1fr 1fr 1fr 1fr auto;
+        align-items: end;
+        margin-bottom: 0;
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 13px;
+      color: var(--text2);
+      font-weight: 600;
+    }
+
+    .date-input,
+    .sel-input,
+    .page-size-select {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-sm);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      padding: 0 14px;
+      width: 100%;
+      outline: none;
+      cursor: pointer;
+      min-height: 48px;
+      transition: all 0.15s ease;
+    }
+
+    .date-input:focus,
+    .sel-input:focus,
+    .page-size-select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-soft);
+    }
+
+    .date-input.error {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px var(--danger-bg);
+    }
+
+    .btn-fetch {
+      background: var(--text);
+      color: var(--surface);
+      border: none;
+      border-radius: var(--r-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 0 24px;
+      cursor: pointer;
+      white-space: nowrap;
+      min-height: 48px;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .btn-fetch:hover {
+      background: var(--text2);
+      transform: translateY(-1px);
+    }
+
+    .btn-fetch:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .warning {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-bdr);
+      border-radius: var(--r-sm);
+      padding: 14px 16px;
+      margin-top: 16px;
+      color: var(--danger);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .warning span:first-child {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--danger);
+      color: #fff;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .warning.show {
+      display: flex;
+    }
+
+    .loading {
+      display: none;
+      margin-top: 24px;
+      border-radius: var(--r);
+      padding: 60px 24px;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    .loading.show,
+    .results.show {
+      display: block;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .loading-sub {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .results {
+      display: none;
+      margin-top: 32px;
+    }
+
+    .section-eyebrow {
+      font-size: 16px;
+      color: var(--text);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .mob-only {
+      display: block !important;
+    }
+
+    .desk-only {
+      display: none !important;
+    }
+
+    @media(min-width:768px) {
+      .mob-only {
+        display: none !important;
+      }
+
+      .desk-only {
+        display: block !important;
+      }
+    }
+
+    .summary-card {
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .rev-banner {
+      padding: 24px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .rev-banner.green-bg {
+      background: var(--rev-bg);
+      border-bottom-color: var(--rev-bdr);
+    }
+
+    .rev-banner.red-bg {
+      background: var(--exp-bg);
+      border-bottom-color: var(--exp-bdr);
+    }
+
+    .rev-eyebrow,
+    .sum-col-title,
+    .pay-sum-tag {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text2);
+      font-weight: 700;
+      display: block;
+    }
+
+    .rev-eyebrow {
+      margin-bottom: 4px;
+    }
+
+    .rev-title {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .rev-amount {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    @media(min-width:500px) {
+      .rev-amount {
+        font-size: 42px;
+      }
+    }
+
+    .rev-amount.green,
+    .sum-total-amt.green,
+    .guest-total-amt,
+    .rev-amt {
+      color: var(--rev);
+    }
+
+    .rev-amount.red,
+    .sum-total-amt.red,
+    .exp-day-total-amt,
+    .exp-amt {
+      color: var(--exp);
+    }
+
+    .summary-grids {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .summary-kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media(min-width:680px) {
+      .summary-kpi-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .summary-kpi+.summary-kpi {
+        border-left: 1px solid var(--border);
+      }
+    }
+
+    .summary-kpi {
+      padding: 22px 24px;
+      background: var(--surface);
+    }
+
+    .summary-kpi+.summary-kpi {
+      border-top: 1px solid var(--border);
+    }
+
+    @media(min-width:680px) {
+      .summary-kpi+.summary-kpi {
+        border-top: none;
+      }
+    }
+
+    .summary-kpi-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text2);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .summary-kpi-value {
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .summary-kpi-value.green {
+      color: var(--rev-dark);
+    }
+
+    .summary-kpi-value.red {
+      color: var(--exp-dark);
+    }
+
+    @media(min-width:600px) {
+      .summary-grids {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .summary-col:first-child {
+        border-right: 1px solid var(--border);
+      }
+    }
+
+    .summary-col {
+      padding: 20px 24px;
+    }
+
+    .summary-col+.summary-col {
+      border-top: 1px solid var(--border);
+    }
+
+    @media(min-width:600px) {
+      .summary-col+.summary-col {
+        border-top: none;
+      }
+    }
+
+    .sum-col-title {
+      margin-bottom: 16px;
+    }
+
+    .sum-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .sum-row:last-child {
+      border-bottom: none;
+    }
+
+    .sum-row-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sum-bar-wrap {
+      width: 48px;
+      height: 6px;
+      background: var(--surface4);
+      border-radius: 4px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sum-bar {
+      height: 100%;
+      border-radius: 4px;
+    }
+
+    .sum-bar.green {
+      background: var(--rev);
+    }
+
+    .sum-bar.red {
+      background: var(--exp);
+    }
+
+    .sum-name {
+      font-size: 14px;
+      color: var(--text2);
+      font-weight: 500;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .sum-amt {
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .sum-total-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0 0;
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .sum-total-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sum-total-amt {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .rev-stats-row {
+      display: flex;
+      gap: 8px;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      background: var(--surface2);
+      flex-wrap: wrap;
+    }
+
+    .rev-stat-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1;
+      min-width: 90px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .rev-stat-pill:hover:not(:disabled),
+    .rev-stat-pill.active {
+      border-color: var(--gold);
+    }
+
+    .rev-stat-pill.active {
+      background: var(--gold-soft);
+    }
+
+    .rev-stat-pill.zero:hover:not(:disabled),
+    .rev-stat-pill.zero.active {
+      border-color: var(--danger);
+    }
+
+    .rev-stat-pill.zero.active {
+      background: var(--danger-bg);
+    }
+
+    .rev-stat-pill:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .rev-stat-num {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .rev-stat-lbl {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .tbl-wrap {
+      overflow: visible;
+    }
+
+    .data-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .data-tbl th {
+      background: var(--surface2);
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--text2);
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .data-tbl th.right,
+    .data-tbl td.right {
+      text-align: right;
+    }
+
+    @media(min-width:768px) {
+      .desk-only .data-tbl th {
+        position: sticky;
+        top: var(--table-head-top);
+        z-index: 40;
+      }
+    }
+
+    .data-tbl td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border2);
+      color: var(--text);
+      vertical-align: top;
+    }
+
+    .data-tbl tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-tbl tbody tr:hover td {
+      background: var(--surface2);
+    }
+
+    .tbl-date-cell {
+      font-size: 14px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .tbl-name-bold {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tbl-nil {
+      color: var(--muted2);
+    }
+
+    .detail-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 0;
+      font-size: 14px;
+    }
+
+    .detail-line span:first-child {
+      color: var(--muted);
+    }
+
+    .detail-line span:last-child {
+      color: var(--text);
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .data-tbl td.rev-amt,
+    .data-tbl td .rev-amt {
+      color: var(--rev);
+      font-weight: 700;
+    }
+
+    .data-tbl td.exp-amt,
+    .data-tbl td .exp-amt {
+      color: var(--exp);
+      font-weight: 700;
+    }
+
+    .guest-list,
+    .exp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .guest-card,
+    .exp-day-card,
+    .pday-card {
+      overflow: hidden;
+    }
+
+    .guest-hd,
+    .exp-day-hd,
+    .pday-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .guest-name,
+    .exp-day-date,
+    .pday-date {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .guest-date-pill,
+    .exp-day-count,
+    .status-pill,
+    .pday-badge {
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+
+    .status-pill.paid,
+    .pday-badge.rev {
+      color: var(--rev-dark);
+      background: var(--rev-bg);
+      border-color: var(--rev-bdr);
+    }
+
+    .status-pill.due,
+    .pday-badge.exp {
+      color: var(--exp-dark);
+      background: var(--exp-bg);
+      border-color: var(--exp-bdr);
+    }
+
+    .pay-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .pay-section:last-child {
+      border-bottom: none;
+    }
+
+    .pay-section-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text2);
+    }
+
+    .pay-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 0;
+    }
+
+    .pay-method {
+      font-size: 14px;
+      color: var(--muted);
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .pay-amounts {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 500;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .no-pay {
+      font-size: 14px;
+      color: var(--muted2);
+      font-style: italic;
+    }
+
+    .pay-section-total,
+    .guest-total,
+    .exp-day-total {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 12px;
+      margin-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .guest-total,
+    .exp-day-total {
+      padding: 16px;
+      margin-top: 0;
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+    }
+
+    .guest-total-lbl,
+    .exp-day-total-lbl,
+    .pay-section-total-lbl {
+      font-size: 13px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text2);
+    }
+
+    .guest-total-amt,
+    .exp-day-total-amt,
+    .pay-section-total-amt {
+      font-size: 16px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .exp-tbl-head,
+    .exp-entry {
+      display: grid;
+      grid-template-columns: 1fr 90px 90px;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border2);
+      align-items: center;
+    }
+
+    .exp-tbl-head {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .exp-name-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .exp-name {
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    .exp-cat-pill {
+      font-size: 11px;
+      color: var(--text2);
+      background: var(--surface3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      width: fit-content;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+
+    .exp-cell {
+      font-size: 14px;
+      color: var(--muted);
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .pday-card {
+      margin-bottom: 16px;
+    }
+
+    .pday-split {
+      display: grid;
+      grid-template-columns: 1fr;
+      border-top: 1px solid var(--border);
+    }
+
+    .pday-split-col {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pday-split-col:last-child {
+      border-bottom: none;
+    }
+
+    @media(min-width:600px) {
+      .pday-split {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .pday-split-col {
+        border-bottom: none;
+      }
+
+      .pday-split-col+.pday-split-col {
+        border-left: 1px solid var(--border);
+      }
+    }
+
+    .pday-split-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .pday-split-label.rev {
+      color: var(--rev-dark);
+    }
+
+    .pday-split-label.exp {
+      color: var(--exp-dark);
+    }
+
+    .pday-g-block {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .pday-g-block:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .pday-g-name {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .pday-g-line {
+      font-size: 14px;
+      color: var(--text2);
+      margin-bottom: 4px;
+    }
+
+    .pday-g-line-lbl {
+      font-weight: 600;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+
+    .pday-g-total {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--rev);
+      margin-top: 8px;
+    }
+
+    .a-kpi-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    @media(min-width:420px) {
+      .a-kpi-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media(min-width:680px) {
+      .a-kpi-row {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .a-kpi-card {
+      padding: 24px;
+    }
+
+    .a-kpi-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .a-kpi-val {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .a-kpi-val.green {
+      color: var(--rev-dark);
+    }
+
+    .a-kpi-val.red {
+      color: var(--exp-dark);
+    }
+
+    .a-kpi-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .a-kpi-tag.profit {
+      color: var(--rev-dark);
+      background: var(--rev-bg);
+      border: 1px solid var(--rev-bdr);
+    }
+
+    .a-kpi-tag.loss {
+      color: var(--exp-dark);
+      background: var(--exp-bg);
+      border: 1px solid var(--exp-bdr);
+    }
+
+    .a-charts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media(min-width:768px) {
+      .a-charts-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .a-chart-card {
+      overflow: hidden;
+    }
+
+    .a-chart-hd {
+      padding: 16px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text2);
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .a-chart-canvas {
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .a-chart-slot {
+      width: min(100%, 320px);
+      height: 220px;
+      position: relative;
+    }
+
+    .pie-center-tooltip {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 112px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 3px 10px rgba(17, 24, 39, 0.12);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.35;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.12s ease;
+      z-index: 3;
+    }
+
+    @media(min-width:768px) {
+      .pie-center-tooltip {
+        min-width: 162px;
+        padding: 14px 16px;
+        border-color: var(--border-strong);
+        background: var(--surface);
+        box-shadow: 0 4px 10px rgba(17, 24, 39, 0.16);
+        font-size: 14px;
+        line-height: 1.4;
+        text-align: left;
+      }
+    }
+
+    .pie-center-tooltip.show {
+      opacity: 1;
+    }
+
+    .pie-center-tooltip-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pie-center-tooltip-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .pie-center-tooltip-name {
+      display: block;
+      font-weight: 700;
+    }
+
+    .pie-center-tooltip-amount {
+      display: block;
+      margin-top: 6px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .pie-center-tooltip-pct {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .a-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .a-tbl th,
+    .a-tbl td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border2);
+      text-align: right;
+    }
+
+    .a-tbl th {
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+      color: var(--text2);
+      font-size: 12px;
+    }
+
+    .a-tbl th:first-child,
+    .a-tbl td:first-child {
+      text-align: left;
+    }
+
+    .a-tbl tfoot td {
+      font-weight: 700;
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+      border-bottom: none;
+    }
+
+    .a-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    .a-name-cell {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .pagination-info {
+      font-size: 14px;
+      color: var(--text2);
+      font-weight: 500;
+    }
+
+    .page-size-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .record-controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .page-size-select {
+      min-height: 40px;
+      padding: 0 12px;
+      width: auto;
+      font-size: 14px;
+    }
+
+    .bill-gap-notice {
+      display: none;
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      color: var(--text2);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .bill-gap-notice.show {
+      display: block;
+    }
+
+    .bill-gap-notice strong {
+      color: var(--text);
+    }
+
+    .guest-bill {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .page-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      min-height: 40px;
+    }
+
+    .page-btn:hover {
+      background: var(--surface2);
+    }
+
+    .page-btn.active {
+      background: var(--text);
+      color: var(--surface);
+      border-color: var(--text);
+    }
+
+    .no-data {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 15px;
+      background: var(--surface2);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--r);
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    .remarks-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 500;
+    }
+
+    .remarks-modal.show {
+      display: flex;
+    }
+
+    .remarks-modal-panel {
+      width: min(900px, 100%);
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border-radius: var(--r);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .remarks-modal-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      border-radius: var(--r) var(--r) 0 0;
+    }
+
+    .remarks-modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .remarks-modal-close {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: var(--surface4);
+      border-radius: 50%;
+      color: var(--text);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .remarks-modal-close:hover {
+      background: var(--border-strong);
+    }
+
+    .remarks-modal-body {
+      overflow-y: auto;
+      padding: 20px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .remarks-modal .data-tbl th {
+      position: static;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-brand">
+      <span class="header-title">Raikwal May 2026</span>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-revenue" onclick="switchTab('revenue')">Revenue</button>
+    <button class="tab-btn" id="tab-expenses" onclick="switchTab('expenses')">Expenses</button>
+    <button class="tab-btn" id="tab-payment" onclick="switchTab('payment')">Payments</button>
+    <button class="tab-btn" id="tab-analytics" onclick="switchTab('analytics')">Analytics</button>
+  </div>
+
+  <div class="page">
+    <div class="tab-panel active" id="panel-revenue">
+      <div class="card">
+        <div class="card-head">Date Range</div>
+        <div class="card-body">
+          <div class="fg-2">
+            <div class="field">
+              <label for="r-sd">From</label>
+              <input class="date-input" type="date" id="r-sd" value="2026-05-01" min="2026-05-01" max="2026-05-31" onclick="tryShowPicker(this)">
+            </div>
+            <div class="field">
+              <label for="r-ed">To</label>
+              <input class="date-input" type="date" id="r-ed" value="2026-05-31" min="2026-05-01" max="2026-05-31" onclick="tryShowPicker(this)">
+            </div>
+            <button class="btn-fetch" id="r-fetchBtn" onclick="handleRevenueFetch()">Fetch Data</button>
+          </div>
+          <div class="warning" id="r-warn"><span>!</span><span id="r-warnTxt"></span></div>
+          <div class="inline-card">
+            <div class="fg-2">
+              <div class="field">
+                <div class="inline-note">Press Get Remarks. No need to select anything.</div>
+              </div>
+              <button class="btn-fetch" id="rr-fetchBtn" onclick="handleRevenueRemarksFetch()">Get Remarks</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading" id="r-loading">
+        <div class="spinner"></div>
+        <div class="loading-title">Fetching guest data...</div>
+        <div class="loading-sub">Retrieving guest records.</div>
+      </div>
+      <div class="loading" id="rr-loading">
+        <div class="spinner"></div>
+        <div class="loading-title">Fetching revenue remarks...</div>
+        <div class="loading-sub">Retrieving guest remarks.</div>
+      </div>
+
+      <div class="results" id="r-results">
+        <div class="section-eyebrow">Summary</div>
+        <div class="summary-card" id="r-sum"></div>
+        <div class="section-eyebrow" style="margin-top:32px">Guest Records</div>
+        <div class="pagination-bar">
+          <div class="pagination-info" id="r-pgInfo"></div>
+          <div class="record-controls">
+            <div class="page-size-wrap">
+              <span class="page-size-label">Order</span>
+              <select class="page-size-select" id="r-order" onchange="rOrderChange()">
+                <option value="default" selected>Default Order</option>
+                <option value="bill">Bill No Ascending</option>
+              </select>
+            </div>
+            <div class="page-size-wrap">
+              <span class="page-size-label">Show</span>
+              <select class="page-size-select" id="r-pgSz" onchange="rPgSzChange()">
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="bill-gap-notice" id="r-billGaps"></div>
+        <div class="mob-only guest-list" id="r-cards"></div>
+        <div class="desk-only">
+          <div class="tbl-wrap">
+            <table class="data-tbl">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Bill No</th>
+                  <th>Guest</th>
+                  <th>Charges</th>
+                  <th>Payments</th>
+                  <th class="right">Balance</th>
+                </tr>
+              </thead>
+              <tbody id="r-table"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="page-nav" id="r-pgNav"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-expenses">
+      <div class="card">
+        <div class="card-head">Date Range and Category</div>
+        <div class="card-body">
+          <div class="fg-3">
+            <div class="field">
+              <label for="e-sd">From</label>
+              <input class="date-input" type="date" id="e-sd" value="2026-05-01" min="2026-05-01" max="2026-05-31" onclick="tryShowPicker(this)">
+            </div>
+            <div class="field">
+              <label for="e-ed">To</label>
+              <input class="date-input" type="date" id="e-ed" value="2026-05-31" min="2026-05-01" max="2026-05-31" onclick="tryShowPicker(this)">
+            </div>
+            <div class="field">
+              <label for="e-cat">Category</label>
+              <select class="sel-input" id="e-cat">
+                <option value="all">All Categories</option>
+              </select>
+            </div>
+            <button class="btn-fetch" id="e-fetchBtn" onclick="handleExpFetch()">Fetch Data</button>
+          </div>
+          <div class="warning" id="e-warn"><span>!</span><span id="e-warnTxt"></span></div>
+          <div class="inline-card">
+            <div class="fg-2">
+              <div class="field">
+                <div class="inline-note">Press Get Remarks. No need to select anything.</div>
+              </div>
+              <button class="btn-fetch" id="er-fetchBtn" onclick="handleExpenseRemarksFetch()">Get Remarks</button>
+            </div>
+            <div class="warning" id="er-warn"><span>!</span><span id="er-warnTxt"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading" id="e-loading">
+        <div class="spinner"></div>
+        <div class="loading-title">Fetching expense data...</div>
+        <div class="loading-sub">Retrieving expense records.</div>
+      </div>
+      <div class="loading" id="er-loading">
+        <div class="spinner"></div>
+        <div class="loading-title">Fetching expense remarks...</div>
+        <div class="loading-sub">Retrieving expense remarks.</div>
+      </div>
+
+      <div class="results" id="e-results">
+        <div class="section-eyebrow">Summary</div>
+        <div class="summary-card" id="e-sum"></div>
+        <div class="section-eyebrow" style="margin-top:32px">Expense Records</div>
+        <div class="pagination-bar">
+          <div class="pagination-info" id="e-pgInfo"></div>
+          <div class="page-size-wrap">
+            <span class="page-size-label">Show</span>
+            <select class="page-size-select" id="e-pgSz" onchange="ePgSzChange()">
+              <option value="10" selected>10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="mob-only exp-list" id="e-cards"></div>
+        <div class="desk-only">
+          <div class="tbl-wrap">
+            <table class="data-tbl">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Method</th>
+                  <th class="right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="e-table"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="page-nav" id="e-pgNav"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-payment">
+      <div class="card">
+        <div class="card-head">Date Range, Method and Type</div>
+        <div class="card-body">
+          <div class="fg-3">
+            <div class="field">
+              <label for="p-sd">From</label>
+              <input class="date-input" type="date" id="p-sd" value="2026-04-01" min="2026-04-01" max="2026-08-31" onclick="tryShowPicker(this)">
+            </div>
+            <div class="field">
+              <label for="p-ed">To</label>
+              <input class="date-input" type="date" id="p-ed" value="2026-08-31" min="2026-04-01" max="2026-08-31" onclick="tryShowPicker(this)">
+            </div>
+            <div class="field">
+              <label for="p-method">Payment Method</label>
+              <select class="sel-input" id="p-method">
+                <option value="all">All Methods</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="p-type">Payment Type</label>
+              <select class="sel-input" id="p-type">
+                <option value="all">All</option>
+                <option value="revenue">Revenue only</option>
+                <option value="expense">Expense only</option>
+              </select>
+            </div>
+            <button class="btn-fetch" id="p-fetchBtn" onclick="handlePaymentFetch()">Fetch Data</button>
+          </div>
+          <div class="warning" id="p-warn"><span>!</span><span id="p-warnTxt"></span></div>
+        </div>
+      </div>
+
+      <div class="loading" id="p-loading">
+        <div class="spinner"></div>
+        <div class="loading-title">Fetching payment data...</div>
+        <div class="loading-sub">Retrieving payment records.</div>
+      </div>
+
+      <div class="results" id="p-results">
+        <div class="section-eyebrow">Summary</div>
+        <div class="summary-card" id="p-sum"></div>
+        <div class="section-eyebrow" style="margin-top:32px">Day-wise Records</div>
+        <div class="pagination-bar">
+          <div class="pagination-info" id="p-pgInfo"></div>
+          <div class="page-size-wrap">
+            <span class="page-size-label">Show</span>
+            <select class="page-size-select" id="p-pgSz" onchange="pPgSzChange()">
+              <option value="10" selected>10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="mob-only" id="p-cards"></div>
+        <div class="desk-only">
+          <div class="tbl-wrap">
+            <table class="data-tbl">
+              <thead>
+                <tr id="p-thead-row">
+                  <th style="width:90px">Date</th>
+                  <th>Revenue Details</th>
+                  <th>Expense Details</th>
+                </tr>
+              </thead>
+              <tbody id="p-table"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="page-nav" id="p-pgNav"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-analytics">
+      <div class="card">
+        <div class="card-head">Analytics</div>
+        <div class="card-body">
+          <div class="inline-card">
+            <div class="fg-2">
+              <div class="field">
+                <div class="inline-note">Fetches revenue and expense data across May 2026.</div>
+              </div>
+              <button class="btn-fetch" id="a-fetchBtn" onclick="doAnalyticsFetch()">Fetch Data</button>
+            </div>
+            <div class="warning" id="a-warn"><span>!</span><span id="a-warnTxt"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading" id="a-loading">
+        <div class="spinner"></div>
+        <div class="loading-title">Fetching analytics...</div>
+        <div class="loading-sub">Loading charts and summaries.</div>
+      </div>
+
+      <div class="results" id="a-results">
+        <div class="section-eyebrow">Overview</div>
+        <div class="a-kpi-row" id="a-kpi"></div>
+        <div class="section-eyebrow">Charts</div>
+        <div class="a-charts-grid" id="a-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="remarks-modal" id="remarks-modal" onclick="handleRemarksModalOverlayClick(event)">
+    <div class="remarks-modal-panel">
+      <div class="remarks-modal-hd">
+        <div class="remarks-modal-title" id="remarks-modal-title">Remarks</div>
+        <button class="remarks-modal-close" type="button" onclick="closeRemarksModal_()">x</button>
+      </div>
+      <div class="remarks-modal-body" id="remarks-modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+    var APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzleGE5XLkJ9rcYf3IRWnEH3UVYjYDUFfKyc6eUPHTnVGXJtEtpIkutIYZ1AgBfXaCn/exec";
+    var MAY_START = '01/05/2026';
+    var MAY_END = '31/05/2026';
+    var DASHBOARD_CACHE_MS = 30 * 60 * 1000;
+    var DASHBOARD_CACHE_KEY = 'raikwalMay2026DashboardCacheV5';
+
+    var _dashboardCacheData = null, _dashboardCacheFetchedAt = 0, _dashboardCachePromise = null;
+    var _activeTab = 'revenue', _requestSeq = 0, _requestTokens = { r: 0, rr: 0, e: 0, er: 0, p: 0, a: 0 };
+    var _guests = [], _rPg = 1, _rSz = 10, _revFilter = 'all', _rOrder = 'default';
+    var _expDays = [], _ePg = 1, _eSz = 10, _lastExpCat = 'all';
+    var _pDays = [], _pPg = 1, _pSz = 10, _pType = 'all', _lastPayMethod = 'all', _lastPayType = 'all';
+    var _chartsReady = false, _pendingDraw = null, _chartDefs = [];
+
+    var REV_PALETTE = ['#16a34a', '#2563eb', '#9a710a', '#7c3aed', '#0891b2', '#c2410c', '#0e7490', '#6d28d9'];
+    var EXP_PALETTE = ['#dc2626', '#9a3412', '#7c3aed', '#0f766e', '#1d4ed8', '#92400e', '#6b21a8', '#065f46'];
+
+    if (window.google && google.charts) {
+      google.charts.load('current', { packages: ['corechart'] });
+      google.charts.setOnLoadCallback(function () {
+        _chartsReady = true;
+        if (_pendingDraw) {
+          setTimeout(function () {
+            drawAllCharts(_pendingDraw);
+            _pendingDraw = null;
+          }, 150);
+        }
+      });
+    }
+
+    window.addEventListener('resize', debounce_(function () {
+      if (_chartDefs.length && _chartsReady) drawAllCharts(_chartDefs);
+    }, 250));
+
+    function callBackend(params) {
+      if (!APP_SCRIPT_URL || APP_SCRIPT_URL.indexOf('PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') !== -1) {
+        return Promise.reject(new Error('Set APP_SCRIPT_URL before fetching data.'));
+      }
+
+      return new Promise(function (resolve, reject) {
+        var callbackName = '__gasCb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+        var script = document.createElement('script');
+        var done = false;
+        var timer = setTimeout(function () {
+          cleanup();
+          reject(new Error('Request timed out while fetching data.'));
+        }, 30000);
+
+        function cleanup() {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
+          delete window[callbackName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        window[callbackName] = function (data) {
+          cleanup();
+          resolve(data);
+        };
+
+        var joiner = APP_SCRIPT_URL.indexOf('?') === -1 ? '?' : '&';
+        var url = APP_SCRIPT_URL + joiner + 'callback=' + encodeURIComponent(callbackName) + '&_=' + Date.now();
+        if (params) {
+          for (var k in params) {
+            if (params[k] !== undefined && params[k] !== null) {
+              url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+            }
+          }
+        }
+
+        script.onerror = function () {
+          cleanup();
+          reject(new Error('Unable to reach Apps Script web app. Check that APP_SCRIPT_URL is the deployed /exec URL and the web app access is set to Anyone.'));
+        };
+        script.src = url;
+        document.head.appendChild(script);
+      }).then(function (data) {
+        if (!data || !data.success) throw new Error((data && data.error) || 'Unable to fetch dashboard data.');
+        return data;
+      });
+    }
+
+    function byId(id) { return document.getElementById(id); }
+    function tryShowPicker(el) { try { el.showPicker(); } catch (e) { } }
+    function beginRequest_(prefix) { var token = ++_requestSeq; _requestTokens[prefix] = token; return token; }
+    function isLatestRequest_(prefix, token) { return _requestTokens[prefix] === token; }
+    function invalidateRequest_(prefix) { _requestTokens[prefix] = ++_requestSeq; }
+    function debounce_(fn, wait) { var t; return function () { clearTimeout(t); t = setTimeout(fn, wait); }; }
+
+    function switchTab(t) {
+      _activeTab = t;
+      if (t !== 'revenue') invalidateRequest_('rr');
+      if (t !== 'expenses') invalidateRequest_('er');
+      closeRemarksModal_();
+      ['revenue', 'expenses', 'payment', 'analytics'].forEach(function (x) {
+        byId('tab-' + x).classList.toggle('active', x === t);
+        byId('panel-' + x).classList.toggle('active', x === t);
+      });
+    }
+
+    function toSD(v) {
+      var p = String(v || '').split('-');
+      return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : '';
+    }
+
+    function parseClientDateValue_(value) {
+      var match = normalizeClientString_(value).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (!match) return NaN;
+      return Number(match[3]) * 10000 + Number(match[2]) * 100 + Number(match[1]);
+    }
+
+    function dateTextInRange_(value, startText, endText) {
+      var dateValue = parseClientDateValue_(value);
+      var startValue = parseClientDateValue_(startText);
+      var endValue = parseClientDateValue_(endText);
+      return !isNaN(dateValue) && !isNaN(startValue) && !isNaN(endValue) && dateValue >= startValue && dateValue <= endValue;
+    }
+
+    function normalizeClientString_(value) {
+      return value === null || value === undefined ? '' : String(value).trim();
+    }
+
+    function escapeHtml_(value) {
+      return normalizeClientString_(value).replace(/[&<>"']/g, function (char) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+      });
+    }
+
+    function fmtAmt(n) {
+      return '₹' + Number(n || 0).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    }
+
+    function amountValue_(value) {
+      var n = Number(value);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function hasAmount_(value) {
+      return value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
+    }
+
+    function displayAmount_(item) {
+      if (item && hasAmount_(item.amount)) return fmtAmt(item.amount);
+      var text = normalizeClientString_(item && item.amountText);
+      return text || '-';
+    }
+
+    function totalAmount_(items) {
+      return (items || []).reduce(function (sum, item) { return sum + amountValue_(item && item.amount); }, 0);
+    }
+
+    function showWarn(p, m) {
+      var warnText = byId(p + '-warnTxt'), warn = byId(p + '-warn');
+      if (!warnText || !warn) return;
+      warnText.textContent = m;
+      warn.classList.add('show');
+    }
+
+    function hideWarn(p) {
+      var warn = byId(p + '-warn');
+      if (warn) warn.classList.remove('show');
+    }
+
+    function setLoad(p, on) {
+      var button = byId(p + '-fetchBtn');
+      if (p === 'e' || p === 'er') {
+        byId('e-fetchBtn').disabled = on;
+        byId('er-fetchBtn').disabled = on;
+      } else if (p === 'r' || p === 'rr') {
+        byId('r-fetchBtn').disabled = on;
+        byId('rr-fetchBtn').disabled = on;
+      } else if (button) {
+        button.disabled = on;
+      }
+      if (button) button.textContent = on ? 'Fetching...' : ((p === 'er' || p === 'rr') ? 'Get Remarks' : 'Fetch Data');
+      if (!on && (p === 'e' || p === 'er')) {
+        byId('e-fetchBtn').textContent = 'Fetch Data';
+        byId('er-fetchBtn').textContent = 'Get Remarks';
+      }
+      if (!on && (p === 'r' || p === 'rr')) {
+        byId('r-fetchBtn').textContent = 'Fetch Data';
+        byId('rr-fetchBtn').textContent = 'Get Remarks';
+      }
+      var loading = byId(p + '-loading');
+      if (loading) loading.classList.toggle('show', on);
+      var results = byId(p + '-results');
+      if (on && results) results.classList.remove('show');
+    }
+
+    function validateDates(p) {
+      var s = byId(p + '-sd'), e = byId(p + '-ed');
+      s.classList.remove('error');
+      e.classList.remove('error');
+      if (!s.value && !e.value) {
+        showWarn(p, 'Both dates are required.');
+        s.classList.add('error');
+        e.classList.add('error');
+        return null;
+      }
+      if (!s.value) {
+        showWarn(p, 'Please select a start date.');
+        s.classList.add('error');
+        return null;
+      }
+      if (!e.value) {
+        showWarn(p, 'Please select an end date.');
+        e.classList.add('error');
+        return null;
+      }
+      if (s.value > e.value) {
+        showWarn(p, 'Start date cannot be after end date.');
+        s.classList.add('error');
+        e.classList.add('error');
+        return null;
+      }
+      return { start: toSD(s.value), end: toSD(e.value) };
+    }
+
+    function bindWarnReset(prefix, ids) {
+      ids.forEach(function (id) {
+        var element = byId(id);
+        if (!element) return;
+        element.addEventListener('change', function () { hideWarn(prefix); });
+      });
+    }
+
+    function appendOptions(select, values, dedupe) {
+      var seen = dedupe ? {} : null;
+      if (dedupe) {
+        Array.prototype.slice.call(select.options).forEach(function (opt) {
+          seen[String(opt.value).toLowerCase()] = true;
+        });
+      }
+      (values || []).forEach(function (value) {
+        value = normalizeClientString_(value);
+        if (!value) return;
+        var key = value.toLowerCase();
+        if (dedupe && seen[key]) return;
+        if (dedupe) seen[key] = true;
+        var option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+      });
+    }
+
+    function syncSelectOptions_(selectId, baseCount, values, dedupe) {
+      var select = byId(selectId);
+      var selectedValue = select.value;
+      while (select.options.length > baseCount) select.remove(baseCount);
+      appendOptions(select, values || [], dedupe);
+      var hasSelectedValue = Array.prototype.some.call(select.options, function (option) {
+        return option.value === selectedValue;
+      });
+      if (hasSelectedValue) select.value = selectedValue;
+    }
+
+    function syncDashboardDropdowns_() {
+      if (!_dashboardCacheData || !_dashboardCacheData.dropdowns) return;
+      syncSelectOptions_('e-cat', 1, _dashboardCacheData.dropdowns.expenseCategories || [], false);
+      syncSelectOptions_('p-method', 1, _dashboardCacheData.dropdowns.paymentMethods || [], true);
+    }
+
+    function getStoredDashboardCache_() {
+      try {
+        var raw = localStorage.getItem(DASHBOARD_CACHE_KEY);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        if (!parsed || !parsed.data || !parsed.fetchedAt) return null;
+        if (Date.now() - Number(parsed.fetchedAt) > DASHBOARD_CACHE_MS) return null;
+        return parsed;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function storeDashboardCache_(data) {
+      _dashboardCacheData = data;
+      _dashboardCacheFetchedAt = Date.now();
+      try {
+        localStorage.setItem(DASHBOARD_CACHE_KEY, JSON.stringify({ fetchedAt: _dashboardCacheFetchedAt, data: data }));
+      } catch (e) { }
+      syncDashboardDropdowns_();
+      return data;
+    }
+
+    function ensureDashboardCache_() {
+      if (_dashboardCacheData && (Date.now() - _dashboardCacheFetchedAt) <= DASHBOARD_CACHE_MS) {
+        syncDashboardDropdowns_();
+        return Promise.resolve(_dashboardCacheData);
+      }
+      var stored = getStoredDashboardCache_();
+      if (stored) {
+        _dashboardCacheData = stored.data;
+        _dashboardCacheFetchedAt = Number(stored.fetchedAt) || Date.now();
+        syncDashboardDropdowns_();
+        return Promise.resolve(_dashboardCacheData);
+      }
+      if (_dashboardCachePromise) return _dashboardCachePromise;
+      _dashboardCachePromise = callBackend().then(function (data) {
+        _dashboardCachePromise = null;
+        return storeDashboardCache_(data);
+      }).catch(function (error) {
+        _dashboardCachePromise = null;
+        throw error;
+      });
+      return _dashboardCachePromise;
+    }
+
+    function primeDashboardCache_() {
+      ensureDashboardCache_().catch(function (error) { console.error(error); });
+    }
+
+    function cloneAmountItem_(item, labelKey) {
+      item = item && typeof item === 'object' ? item : {};
+      return {
+        label: item[labelKey || 'label'] || item.label || item.name || '',
+        amount: hasAmount_(item.amount) ? Number(item.amount) : null,
+        amountText: item.amountText || ''
+      };
+    }
+
+    function cloneGuest_(guest) {
+      guest = guest && typeof guest === 'object' ? guest : {};
+      var charges = (guest.charges || []).map(function (item) { return cloneAmountItem_(item, 'label'); });
+      var payments = (guest.payments || []).map(function (payment) {
+        payment = payment && typeof payment === 'object' ? payment : {};
+        return {
+          date: payment.date || guest.date || '',
+          method: payment.method || '-',
+          amount: hasAmount_(payment.amount) ? Number(payment.amount) : null,
+          amountText: payment.amountText || ''
+        };
+      }).filter(function (payment) {
+        return normalizeClientString_(payment.method) !== '-' || amountValue_(payment.amount) !== 0;
+      });
+      var totalCharges = totalAmount_(charges);
+      var totalPayments = totalAmount_(payments);
+      return {
+        date: guest.date || guest.checkoutDate || '',
+        checkoutDate: guest.checkoutDate || guest.date || '',
+        name: guest.name || '',
+        billNo: normalizeClientString_(guest.billNo),
+        remarks: guest.remarks || '',
+        isMarriage: !!guest.isMarriage,
+        charges: charges,
+        payments: payments,
+        totalCharges: totalCharges,
+        totalPayments: totalPayments,
+        balance: totalPayments - totalCharges
+      };
+    }
+
+    function cloneExpenseEntry_(entry) {
+      entry = entry && typeof entry === 'object' ? entry : {};
+      return {
+        name: entry.name || '',
+        category: entry.category || '',
+        method: entry.method || '',
+        amount: hasAmount_(entry.amount) ? Number(entry.amount) : null,
+        amountText: entry.amountText || ''
+      };
+    }
+
+    function cloneExpenseDay_(day, entries) {
+      day = day && typeof day === 'object' ? day : {};
+      entries = entries || (day.entries || []).map(cloneExpenseEntry_);
+      return {
+        date: day.date || '',
+        remarks: day.remarks || '',
+        entries: entries,
+        total: totalAmount_(entries)
+      };
+    }
+
+    function getCachedGuestsForRange_(startText, endText) {
+      return (_dashboardCacheData && _dashboardCacheData.guests || [])
+        .map(cloneGuest_)
+        .filter(function (guest) { return dateTextInRange_(guest.date, startText, endText); });
+    }
+
+    function getCachedExpenseDaysForRange_(startText, endText, category) {
+      var normalizedCategory = normalizeClientString_(category || 'all');
+      return (_dashboardCacheData && _dashboardCacheData.expenses || []).reduce(function (days, day) {
+        if (!dateTextInRange_(day.date, startText, endText)) return days;
+        var entries = (day.entries || []).map(cloneExpenseEntry_);
+        if (normalizedCategory !== 'all') {
+          entries = entries.filter(function (entry) { return entry.category === normalizedCategory; });
+        }
+        if (!entries.length && !normalizeClientString_(day.remarks)) return days;
+        days.push(cloneExpenseDay_(day, entries));
+        return days;
+      }, []);
+    }
+
+    function getCachedExpenseRemarks_() {
+      return (_dashboardCacheData && _dashboardCacheData.expenses || [])
+        .map(function (day) { return cloneExpenseDay_(day); })
+        .filter(function (day) { return normalizeClientString_(day.remarks); })
+        .map(function (day) {
+          return { date: day.date, remarks: day.remarks, total: day.total };
+        });
+    }
+
+    function setPagedEmptyState(prefix, summaryId, message) {
+      byId(summaryId).innerHTML = '<div class="no-data">' + escapeHtml_(message) + '</div>';
+      byId(prefix + '-cards').innerHTML = '';
+      byId(prefix + '-table').innerHTML = '';
+      byId(prefix + '-pgNav').innerHTML = '';
+      byId(prefix + '-pgInfo').textContent = '';
+      if (prefix === 'r') {
+        byId('r-billGaps').classList.remove('show');
+        byId('r-billGaps').innerHTML = '';
+      }
+    }
+
+    function buildPageNav(pfx, totalPages, pg) {
+      var nav = '';
+      if (totalPages > 1) {
+        nav += '<button class="page-btn" onclick="' + pfx + 'GoPage(' + (pg - 1) + ')" ' + (pg === 1 ? 'disabled' : '') + '>Prev</button>';
+        for (var i = 1; i <= totalPages; i++) {
+          nav += '<button class="page-btn' + (i === pg ? ' active' : '') + '" onclick="' + pfx + 'GoPage(' + i + ')">' + i + '</button>';
+        }
+        nav += '<button class="page-btn" onclick="' + pfx + 'GoPage(' + (pg + 1) + ')" ' + (pg === totalPages ? 'disabled' : '') + '>Next</button>';
+      }
+      return nav;
+    }
+
+    function getPageSlice(items, sz, pg) {
+      if (sz === 'all') return { list: items, totalPages: 1, pg: 1 };
+      var tp = Math.ceil(items.length / sz) || 1;
+      if (pg > tp) pg = tp;
+      if (pg < 1) pg = 1;
+      return { list: items.slice((pg - 1) * sz, pg * sz), totalPages: tp, pg: pg };
+    }
+
+    function pgInfo(sz, pg, total) {
+      if (total === 0) return 'Showing 0 record(s)';
+      if (sz === 'all') return 'Showing all ' + total + ' record(s)';
+      return 'Showing ' + ((pg - 1) * sz + 1) + '-' + Math.min(pg * sz, total) + ' of ' + total;
+    }
+
+    function renderPagedPanel(items, size, page, config) {
+      var state = getPageSlice(items, size, page);
+      if (config.beforeRender) config.beforeRender();
+      byId(config.infoId).textContent = pgInfo(size, state.pg, items.length);
+      byId(config.cardsId).innerHTML = state.list.map(config.cardRenderer).join('');
+      byId(config.tableId).innerHTML = state.list.map(config.tableRenderer).join('');
+      byId(config.navId).innerHTML = buildPageNav(config.navPrefix, state.totalPages, state.pg);
+      return state.pg;
+    }
+
+    function objectTotalsToArray_(totals) {
+      return Object.keys(totals).map(function (key) {
+        return { label: key, amt: totals[key], amount: totals[key] };
+      }).filter(function (item) {
+        return Math.abs(amountValue_(item.amt)) > 0.005;
+      }).sort(function (left, right) { return right.amt - left.amt; });
+    }
+
+    function addTotal_(totals, label, amount) {
+      label = normalizeClientString_(label) || '-';
+      totals[label] = (totals[label] || 0) + amountValue_(amount);
+    }
+
+    function isMarriageGuest_(guest) {
+      if (guest && guest.isMarriage) return true;
+      var text = [
+        guest && guest.name,
+        guest && guest.remarks,
+        (guest && guest.charges || []).map(function (charge) { return charge.label; }).join(' ')
+      ].join(' ');
+      return /marriage|mariage|wedding/i.test(text);
+    }
+
+    function getGuestChargeByLabel_(guest, label) {
+      var wanted = normalizeClientString_(label).toLowerCase();
+      return (guest && guest.charges || []).reduce(function (total, charge) {
+        return normalizeClientString_(charge.label).toLowerCase() === wanted ? total + amountValue_(charge.amount) : total;
+      }, 0);
+    }
+
+    function isFoodOnlyGuest_(guest) {
+      return !isMarriageGuest_(guest) && getGuestChargeByLabel_(guest, 'Food') > 0.005 && getGuestChargeByLabel_(guest, 'Room') <= 0.005;
+    }
+
+    function isRoomOnlyGuest_(guest) {
+      return !isMarriageGuest_(guest) && getGuestChargeByLabel_(guest, 'Room') > 0.005 && getGuestChargeByLabel_(guest, 'Food') <= 0.005;
+    }
+
+    function isFoodRoomGuest_(guest) {
+      return !isMarriageGuest_(guest) && getGuestChargeByLabel_(guest, 'Food') > 0.005 && getGuestChargeByLabel_(guest, 'Room') > 0.005;
+    }
+
+    function isPendingGuest_(guest) {
+      return getGuestDue_(guest) > 0.005;
+    }
+
+    function isNoChargeGuest_(guest) {
+      return amountValue_(guest && guest.totalCharges) <= 0.005;
+    }
+
+    function isOtherChargeGuest_(guest) {
+      return amountValue_(guest && guest.totalCharges) > 0.005 &&
+        !isMarriageGuest_(guest) &&
+        getGuestChargeByLabel_(guest, 'Food') <= 0.005 &&
+        getGuestChargeByLabel_(guest, 'Room') <= 0.005;
+    }
+
+    function getGuestOtherChargeNames_(guest) {
+      var standard = {
+        room: true,
+        food: true,
+        'extra mattress': true,
+        heater: true,
+        marriage: true
+      };
+      var seen = {};
+      return (guest && guest.charges || []).reduce(function (names, charge) {
+        var label = normalizeClientString_(charge.label);
+        var key = label.toLowerCase();
+        if (!label || standard[key] || seen[key] || Math.abs(amountValue_(charge.amount)) <= 0.005) return names;
+        seen[key] = true;
+        names.push(label);
+        return names;
+      }, []);
+    }
+
+    function getGuestDue_(guest) {
+      return amountValue_(guest.totalCharges) - amountValue_(guest.totalPayments);
+    }
+
+    function isGuestPaid_(guest) {
+      return Math.abs(getGuestDue_(guest)) < 0.005 && amountValue_(guest.totalCharges) > 0;
+    }
+
+    function hasGuestRemarks_(guest) {
+      return !!normalizeClientString_(guest.remarks);
+    }
+
+    function getFilteredGuests() {
+      var source = getRevenueBaseGuests_();
+      if (_revFilter === 'food-only') return source.filter(isFoodOnlyGuest_);
+      if (_revFilter === 'room-only') return source.filter(isRoomOnlyGuest_);
+      if (_revFilter === 'food-room') return source.filter(isFoodRoomGuest_);
+      if (_revFilter === 'marriage') return source.filter(isMarriageGuest_);
+      if (_revFilter === 'pending') return source.filter(isPendingGuest_);
+      if (_revFilter === 'no-charge') return source.filter(isNoChargeGuest_);
+      if (_revFilter === 'other-charge') return source.filter(isOtherChargeGuest_);
+      return source;
+    }
+
+    function getBillNumber_(guest) {
+      var text = normalizeClientString_(guest && guest.billNo);
+      if (!/^\d{1,3}$/.test(text)) return null;
+      var number = parseInt(text, 10);
+      return number >= 1 && number <= 999 ? number : null;
+    }
+
+    function formatBillNumber_(number) {
+      return String(number).padStart(3, '0');
+    }
+
+    function getRevenueBaseGuests_() {
+      if (_rOrder !== 'bill') return _guests;
+      return _guests.filter(function (guest) {
+        return getBillNumber_(guest) !== null;
+      });
+    }
+
+    function getRevenueGuestsForDisplay_() {
+      var guests = getFilteredGuests().slice();
+      if (_rOrder !== 'bill') return guests;
+      return guests.sort(function (left, right) {
+        var difference = getBillNumber_(left) - getBillNumber_(right);
+        return difference || normalizeClientString_(left.name).localeCompare(normalizeClientString_(right.name));
+      });
+    }
+
+    function getMissingBillInfo_() {
+      var numbers = _guests.map(getBillNumber_).filter(function (number) {
+        return number !== null;
+      });
+      if (!numbers.length) return null;
+
+      var present = {};
+      numbers.forEach(function (number) { present[number] = true; });
+      var lowest = Math.min.apply(null, numbers);
+      var highest = Math.max.apply(null, numbers);
+      var missing = [];
+      for (var number = lowest; number <= highest; number++) {
+        if (!present[number]) missing.push(formatBillNumber_(number));
+      }
+      return {
+        lowest: formatBillNumber_(lowest),
+        highest: formatBillNumber_(highest),
+        missing: missing
+      };
+    }
+
+    function renderMissingBills_() {
+      var notice = byId('r-billGaps');
+      if (_rOrder !== 'bill') {
+        notice.classList.remove('show');
+        notice.innerHTML = '';
+        return;
+      }
+
+      var info = getMissingBillInfo_();
+      if (!info) {
+        notice.innerHTML = '<strong>No valid Bill Numbers found.</strong>';
+      } else if (!info.missing.length) {
+        notice.innerHTML = '<strong>Bill range ' + info.lowest + '-' + info.highest + ':</strong> No missing bills.';
+      } else {
+        notice.innerHTML = '<strong>Missing bills between ' + info.lowest + ' and ' + info.highest + ':</strong> ' + info.missing.join(', ');
+      }
+      notice.classList.add('show');
+    }
+
+    function setRevFilter(filter) {
+      _revFilter = filter;
+      _rPg = 1;
+      rRender();
+    }
+
+    function buildRevSum(filtered, allGuests) {
+      var chargeTotals = {}, paymentTotals = {};
+      var totalCharges = 0, totalPayments = 0;
+      filtered.forEach(function (guest) {
+        var marriageRow = isMarriageGuest_(guest);
+        (guest.charges || []).forEach(function (charge) {
+          var chargeLabel = marriageRow && normalizeClientString_(charge.label).toLowerCase() === 'room' ? 'Marriage' : charge.label;
+          addTotal_(chargeTotals, chargeLabel, charge.amount);
+          totalCharges += amountValue_(charge.amount);
+        });
+        (guest.payments || []).forEach(function (payment) {
+          addTotal_(paymentTotals, payment.method, payment.amount);
+          totalPayments += amountValue_(payment.amount);
+        });
+      });
+      return {
+        charges: objectTotalsToArray_(chargeTotals),
+        methods: objectTotalsToArray_(paymentTotals),
+        totalCharges: totalCharges,
+        totalPayments: totalPayments,
+        pending: Math.max(totalCharges - totalPayments, 0),
+        total: allGuests.length,
+        filteredTotal: filtered.length,
+        foodOnly: allGuests.filter(isFoodOnlyGuest_).length,
+        roomOnly: allGuests.filter(isRoomOnlyGuest_).length,
+        foodRoom: allGuests.filter(isFoodRoomGuest_).length,
+        marriage: allGuests.filter(isMarriageGuest_).length,
+        pendingCount: allGuests.filter(isPendingGuest_).length,
+        noCharge: allGuests.filter(isNoChargeGuest_).length,
+        otherCharge: allGuests.filter(isOtherChargeGuest_).length
+      };
+    }
+
+    function renderSummaryRows_(rows, barCls) {
+      if (!rows.length) return '<div style="font-size:13px;color:var(--muted)">No data available.</div>';
+      var max = rows[0].amt || 1;
+      return rows.map(function (row) {
+        return '<div class="sum-row"><div class="sum-row-left"><div class="sum-bar-wrap"><div class="sum-bar ' + barCls + '" style="width:' + Math.round(row.amt / max * 100) + '%"></div></div><span class="sum-name">' + escapeHtml_(row.label) + '</span></div><span class="sum-amt">' + fmtAmt(row.amt) + '</span></div>';
+      }).join('');
+    }
+
+    function renderRevSummary(summary) {
+      var pendingClass = summary.pending > 0.005 ? 'red' : 'green';
+      var pills = [
+        { f: 'all', lbl: 'All', cnt: summary.total },
+        { f: 'food-only', lbl: 'Food Only', cnt: summary.foodOnly },
+        { f: 'room-only', lbl: 'Room Only', cnt: summary.roomOnly },
+        { f: 'food-room', lbl: 'Food & Room', cnt: summary.foodRoom },
+        { f: 'marriage', lbl: 'Marriage', cnt: summary.marriage },
+        { f: 'pending', lbl: 'Pending', cnt: summary.pendingCount, alert: true },
+        { f: 'no-charge', lbl: 'No Charge', cnt: summary.noCharge },
+        { f: 'other-charge', lbl: 'Other Charge', cnt: summary.otherCharge }
+      ];
+      var pillsHtml = pills.map(function (pill) {
+        var disabled = pill.cnt === 0 && pill.f !== 'all';
+        return '<button class="rev-stat-pill' + (_revFilter === pill.f ? ' active' : '') + (pill.alert ? ' zero' : '') + '" ' + (disabled ? 'disabled' : 'onclick="setRevFilter(\'' + pill.f + '\')"') + '><span class="rev-stat-num" style="' + (pill.alert ? 'color:var(--exp)' : '') + '">' + pill.cnt + '</span><span class="rev-stat-lbl">' + pill.lbl + '</span></button>';
+      }).join('');
+
+      byId('r-sum').innerHTML =
+        '<div class="summary-kpi-grid"><div class="summary-kpi"><div class="summary-kpi-label">Total Revenue</div><div class="summary-kpi-value green">' + fmtAmt(summary.totalCharges) + '</div></div><div class="summary-kpi"><div class="summary-kpi-label">Payment Received</div><div class="summary-kpi-value green">' + fmtAmt(summary.totalPayments) + '</div></div><div class="summary-kpi"><div class="summary-kpi-label">Pending</div><div class="summary-kpi-value ' + pendingClass + '">' + fmtAmt(summary.pending) + '</div></div></div>' +
+        '<div class="summary-grids"><div class="summary-col"><div class="sum-col-title">By Charge Type</div>' + renderSummaryRows_(summary.charges, 'green') + '<div class="sum-total-row"><span class="sum-total-label">Total Charges</span><span class="sum-total-amt green">' + fmtAmt(summary.totalCharges) + '</span></div></div>' +
+        '<div class="summary-col"><div class="sum-col-title">By Payment Method</div>' + renderSummaryRows_(summary.methods, 'green') + '<div class="sum-total-row"><span class="sum-total-label">Total Paid</span><span class="sum-total-amt green">' + fmtAmt(summary.totalPayments) + '</span></div></div></div>' +
+        '<div class="rev-stats-row">' + pillsHtml + '</div>';
+    }
+
+    function renderChargeLines_(charges) {
+      charges = (charges || []).filter(function (charge) { return Math.abs(amountValue_(charge.amount)) > 0.005; });
+      if (!charges.length) return '<div class="no-pay">No charges recorded.</div>';
+      return charges.map(function (charge) {
+        return '<div class="pay-row"><span class="pay-method">' + escapeHtml_(charge.label || '-') + '</span><span class="pay-amounts">' + displayAmount_(charge) + '</span></div>';
+      }).join('');
+    }
+
+    function renderPaymentLines_(payments, showDate) {
+      payments = (payments || []).filter(function (payment) { return Math.abs(amountValue_(payment.amount)) > 0.005; });
+      if (!payments.length) return '<div class="no-pay">No payment recorded.</div>';
+      return payments.map(function (payment) {
+        var method = escapeHtml_(payment.method || '-');
+        if (showDate && payment.date) method += ' <span style="color:var(--muted2)">(' + escapeHtml_(payment.date) + ')</span>';
+        return '<div class="pay-row"><span class="pay-method">' + method + '</span><span class="pay-amounts">' + displayAmount_(payment) + '</span></div>';
+      }).join('');
+    }
+
+    function renderGuestStatus_(guest) {
+      var due = getGuestDue_(guest);
+      if (due > 0.005) return '<span class="status-pill due">Due ' + fmtAmt(due) + '</span>';
+      if (due < -0.005) return '<span class="status-pill">Overpaid ' + fmtAmt(Math.abs(due)) + '</span>';
+      return '<span class="status-pill paid">Paid</span>';
+    }
+
+    function renderGuestCard(guest) {
+      var due = getGuestDue_(guest);
+      var balanceHtml = due > 0.005 ? fmtAmt(due) : '';
+      var billHtml = '<div class="guest-bill">Bill No: <strong>' + escapeHtml_(guest.billNo || '-') + '</strong></div>';
+      var otherNames = getGuestOtherChargeNames_(guest);
+      var otherHtml = otherNames.length ? '<div style="font-size:12px;color:var(--muted);font-weight:500;margin-top:2px">' + escapeHtml_(otherNames.join(', ')) + '</div>' : '';
+      return '<div class="guest-card"><div class="guest-hd"><div style="min-width:0;flex:1"><span class="guest-name">' + escapeHtml_(guest.name || '-') + '</span>' + billHtml + otherHtml + '</div><span class="guest-date-pill">' + escapeHtml_(guest.date) + '</span></div>' +
+        '<div class="pay-section"><div class="pay-section-label">Charges</div>' + renderChargeLines_(guest.charges || []) + '<div class="pay-section-total"><span class="pay-section-total-lbl">Charge Total</span><span class="pay-section-total-amt rev-amt">' + fmtAmt(guest.totalCharges) + '</span></div></div>' +
+        '<div class="pay-section"><div class="pay-section-label">Payments</div>' + renderPaymentLines_(guest.payments || [], true) + '<div class="pay-section-total"><span class="pay-section-total-lbl">Paid Total</span><span class="pay-section-total-amt rev-amt">' + fmtAmt(guest.totalPayments) + '</span></div></div>' +
+        '<div class="guest-total"><span class="guest-total-lbl">Balance</span><span class="guest-total-amt" style="color:var(--exp);font-weight:700">' + balanceHtml + '</span></div></div>';
+    }
+
+    function renderDetailLines_(items, labelKey, totalLabel) {
+      items = (items || []).filter(function (item) { return Math.abs(amountValue_(item.amount)) > 0.005; });
+      if (!items.length) return '<span class="tbl-nil">-</span>';
+      var rows = items.map(function (item) {
+        return '<div class="detail-line"><span>' + escapeHtml_(item[labelKey] || item.label || item.method || '-') + '</span><span>' + displayAmount_(item) + '</span></div>';
+      }).join('');
+      return rows + '<div class="detail-line" style="border-top:1px solid var(--border);margin-top:6px;padding-top:8px"><span>' + escapeHtml_(totalLabel || 'Total') + '</span><span class="rev-amt">' + fmtAmt(totalAmount_(items)) + '</span></div>';
+    }
+
+    function renderGuestTableRow(guest) {
+      var due = getGuestDue_(guest);
+      var balanceHtml = due > 0.005 ? fmtAmt(due) : '';
+      var otherNames = getGuestOtherChargeNames_(guest);
+      var otherHtml = otherNames.length ? '<div style="font-size:12px;color:var(--muted);margin-top:4px">' + escapeHtml_(otherNames.join(', ')) + '</div>' : '';
+      return '<tr><td class="tbl-date-cell">' + escapeHtml_(guest.date) + '</td><td class="tbl-name-bold">' + escapeHtml_(guest.billNo || '-') + '</td><td><div class="tbl-name-bold">' + escapeHtml_(guest.name || '-') + '</div>' + otherHtml + '</td><td>' + renderDetailLines_(guest.charges || [], 'label', 'Charges Total') + '</td><td>' + renderDetailLines_(guest.payments || [], 'method', 'Payments Total') + '</td><td class="right exp-amt" style="font-weight:700">' + balanceHtml + '</td></tr>';
+    }
+
+    function renderGuestRemarkTableRow(guest) {
+      return '<tr><td class="tbl-date-cell">' + escapeHtml_(guest.date) + '</td><td><div class="tbl-name-bold">' + escapeHtml_(guest.name || '-') + '</div><div class="guest-bill">Bill No: ' + escapeHtml_(guest.billNo || '-') + '</div><div class="rev-amt" style="font-size:12px;margin-top:4px;font-weight:700;">' + fmtAmt(guest.totalCharges) + '</div></td><td style="white-space:pre-wrap;word-break:break-word;line-height:1.6;">' + escapeHtml_(guest.remarks) + '</td></tr>';
+    }
+
+    function rRenderList() {
+      _rPg = renderPagedPanel(getRevenueGuestsForDisplay_(), _rSz, _rPg, {
+        infoId: 'r-pgInfo',
+        cardsId: 'r-cards',
+        tableId: 'r-table',
+        navId: 'r-pgNav',
+        cardRenderer: renderGuestCard,
+        tableRenderer: renderGuestTableRow,
+        navPrefix: 'r'
+      });
+      renderMissingBills_();
+    }
+
+    function rRender() {
+      var filtered = getFilteredGuests();
+      renderRevSummary(buildRevSum(filtered, getRevenueBaseGuests_()));
+      rRenderList();
+    }
+
+    function rPgSzChange() {
+      var v = byId('r-pgSz').value;
+      _rSz = v === 'all' ? 'all' : parseInt(v, 10);
+      _rPg = 1;
+      rRenderList();
+    }
+
+    function rOrderChange() {
+      _rOrder = byId('r-order').value;
+      _rPg = 1;
+      rRender();
+    }
+
+    function rGoPage(p) {
+      _rPg = p;
+      rRenderList();
+      byId('r-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function handleRevenueFetch() {
+      hideWarn('r');
+      var d = validateDates('r');
+      if (!d) return;
+      var requestToken = beginRequest_('r');
+      setLoad('r', true);
+      ensureDashboardCache_().then(function () {
+        if (!isLatestRequest_('r', requestToken)) return;
+        _guests = getCachedGuestsForRange_(d.start, d.end);
+        _rSz = 10;
+        _rPg = 1;
+        _revFilter = 'all';
+        byId('r-pgSz').value = '10';
+        if (!_guests.length) setPagedEmptyState('r', 'r-sum', 'No guest records found.');
+        else rRender();
+        byId('r-results').classList.add('show');
+        setLoad('r', false);
+      }).catch(function (err) {
+        if (!isLatestRequest_('r', requestToken)) return;
+        setLoad('r', false);
+        showWarn('r', 'Error: ' + err.message);
+      });
+    }
+
+    function handleRevenueRemarksFetch() {
+      hideWarn('r');
+      var requestToken = beginRequest_('rr');
+      setLoad('rr', true);
+      ensureDashboardCache_().then(function () {
+        if (!isLatestRequest_('rr', requestToken)) return;
+        var remarks = (_dashboardCacheData.guests || []).map(cloneGuest_).filter(hasGuestRemarks_);
+        if (_activeTab !== 'revenue') { setLoad('rr', false); return; }
+        openRemarksModal_('Revenue Remarks', buildRemarksModalContent_(remarks, {
+          emptyMessage: 'No remarks found.',
+          headHtml: '<th>Date</th><th>Guest & Total</th><th>Remarks</th>',
+          tableRenderer: renderGuestRemarkTableRow
+        }));
+        setLoad('rr', false);
+      }).catch(function (err) {
+        if (!isLatestRequest_('rr', requestToken)) return;
+        setLoad('rr', false);
+        showWarn('r', 'Error: ' + err.message);
+      });
+    }
+
+    function buildExpSum(days) {
+      var categoryTotals = {}, methodTotals = {}, grand = 0;
+      days.forEach(function (day) {
+        (day.entries || []).forEach(function (entry) {
+          var amount = amountValue_(entry.amount);
+          addTotal_(categoryTotals, entry.category, amount);
+          addTotal_(methodTotals, entry.method, amount);
+          grand += amount;
+        });
+      });
+      return {
+        cats: objectTotalsToArray_(categoryTotals),
+        meths: objectTotalsToArray_(methodTotals),
+        grand: grand
+      };
+    }
+
+    function renderExpSummary(summary) {
+      var sub = _lastExpCat === 'all' ? 'All Categories' : 'Category: ' + _lastExpCat;
+      byId('e-sum').innerHTML =
+        '<div class="rev-banner red-bg"><div><span class="rev-eyebrow">Total Expenses</span><span class="rev-title">' + escapeHtml_(sub) + '</span></div><div class="rev-amount red">' + fmtAmt(summary.grand) + '</div></div>' +
+        '<div class="summary-grids"><div class="summary-col"><div class="sum-col-title">By Category</div>' + renderSummaryRows_(summary.cats, 'red') + '<div class="sum-total-row"><span class="sum-total-label">Total</span><span class="sum-total-amt red">' + fmtAmt(summary.grand) + '</span></div></div>' +
+        '<div class="summary-col"><div class="sum-col-title">By Payment Method</div>' + renderSummaryRows_(summary.meths, 'red') + '<div class="sum-total-row"><span class="sum-total-label">Total</span><span class="sum-total-amt red">' + fmtAmt(summary.grand) + '</span></div></div></div>';
+    }
+
+    function renderExpDayCard(day) {
+      var entries = day.entries || [];
+      var rows = entries.length ? entries.map(function (entry) {
+        return '<div class="exp-entry"><div class="exp-name-wrap"><span class="exp-name">' + escapeHtml_(entry.name || '-') + '</span><span class="exp-cat-pill">' + escapeHtml_(entry.category || '-') + '</span></div><span class="exp-cell">' + escapeHtml_(entry.method || '-') + '</span><span class="exp-cell exp-amt">' + displayAmount_(entry) + '</span></div>';
+      }).join('') : '<div style="padding:16px;font-size:14px;color:var(--muted)">No expense entries recorded.</div>';
+      var remarksHtml = normalizeClientString_(day.remarks) ? '<div style="padding:0 16px 16px;font-size:14px;color:var(--text);white-space:pre-wrap"><strong style="color:var(--text2)">Remarks:</strong> ' + escapeHtml_(day.remarks) + '</div>' : '';
+      return '<div class="exp-day-card"><div class="exp-day-hd"><span class="exp-day-date">' + escapeHtml_(day.date) + '</span><span class="exp-day-count">' + entries.length + ' item' + (entries.length !== 1 ? 's' : '') + '</span></div><div class="exp-tbl-head"><span>Name / Category</span><span style="text-align:right">Method</span><span style="text-align:right">Amount</span></div>' + rows + remarksHtml + '<div class="exp-day-total"><span class="exp-day-total-lbl">Day Total</span><span class="exp-day-total-amt">' + fmtAmt(day.total) + '</span></div></div>';
+    }
+
+    function renderExpDayTableRows(day) {
+      var entries = day.entries || [];
+      if (!entries.length) {
+        return '<tr><td class="tbl-date-cell">' + escapeHtml_(day.date) + '</td><td class="tbl-name-bold">No expense entry</td><td>-</td><td>-</td><td class="right tbl-nil">-</td></tr>';
+      }
+      return entries.map(function (entry, i) {
+        return '<tr>' + (i === 0 ? '<td class="tbl-date-cell" rowspan="' + entries.length + '">' + escapeHtml_(day.date) + '</td>' : '') +
+          '<td class="tbl-name-bold">' + escapeHtml_(entry.name || '-') + '</td><td><span class="exp-cat-pill">' + escapeHtml_(entry.category || '-') + '</span></td><td style="color:var(--muted)">' + escapeHtml_(entry.method || '-') + '</td><td class="right exp-amt">' + displayAmount_(entry) + '</td></tr>';
+      }).join('');
+    }
+
+    function eRenderList() {
+      _ePg = renderPagedPanel(_expDays, _eSz, _ePg, {
+        infoId: 'e-pgInfo',
+        cardsId: 'e-cards',
+        tableId: 'e-table',
+        navId: 'e-pgNav',
+        cardRenderer: renderExpDayCard,
+        tableRenderer: renderExpDayTableRows,
+        navPrefix: 'e'
+      });
+    }
+
+    function eRender() {
+      renderExpSummary(buildExpSum(_expDays));
+      eRenderList();
+    }
+
+    function ePgSzChange() {
+      var v = byId('e-pgSz').value;
+      _eSz = v === 'all' ? 'all' : parseInt(v, 10);
+      _ePg = 1;
+      eRenderList();
+    }
+
+    function eGoPage(p) {
+      _ePg = p;
+      eRenderList();
+      byId('e-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function handleExpFetch() {
+      hideWarn('e');
+      var d = validateDates('e');
+      if (!d) return;
+      var requestToken = beginRequest_('e');
+      _lastExpCat = byId('e-cat').value;
+      setLoad('e', true);
+      ensureDashboardCache_().then(function () {
+        if (!isLatestRequest_('e', requestToken)) return;
+        _expDays = getCachedExpenseDaysForRange_(d.start, d.end, _lastExpCat);
+        _eSz = 10;
+        _ePg = 1;
+        byId('e-pgSz').value = '10';
+        if (!_expDays.length) setPagedEmptyState('e', 'e-sum', 'No expense records found.');
+        else eRender();
+        byId('e-results').classList.add('show');
+        setLoad('e', false);
+      }).catch(function (err) {
+        if (!isLatestRequest_('e', requestToken)) return;
+        setLoad('e', false);
+        showWarn('e', 'Error: ' + err.message);
+      });
+    }
+
+    function renderExpenseRemarkTableRow(item) {
+      return '<tr><td class="tbl-date-cell">' + escapeHtml_(item.date) + '</td><td><div class="tbl-name-bold">Expense</div><div class="exp-amt" style="font-size:12px;margin-top:4px;font-weight:700;">' + (item.total > 0 ? fmtAmt(item.total) : '-') + '</div></td><td style="white-space:pre-wrap;word-break:break-word;line-height:1.6;">' + escapeHtml_(item.remarks) + '</td></tr>';
+    }
+
+    function handleExpenseRemarksFetch() {
+      hideWarn('er');
+      var requestToken = beginRequest_('er');
+      setLoad('er', true);
+      ensureDashboardCache_().then(function () {
+        if (!isLatestRequest_('er', requestToken)) return;
+        var remarks = getCachedExpenseRemarks_();
+        if (_activeTab !== 'expenses') { setLoad('er', false); return; }
+        openRemarksModal_('Expense Remarks', buildRemarksModalContent_(remarks, {
+          emptyMessage: 'No remarks found.',
+          headHtml: '<th>Date</th><th>Expense & Total</th><th>Remarks</th>',
+          tableRenderer: renderExpenseRemarkTableRow
+        }));
+        setLoad('er', false);
+      }).catch(function (err) {
+        if (!isLatestRequest_('er', requestToken)) return;
+        setLoad('er', false);
+        showWarn('er', 'Error: ' + err.message);
+      });
+    }
+
+    function getOrCreatePaymentDay_(map, ordered, date) {
+      if (!map[date]) {
+        map[date] = { date: date, guests: [], expenses: [], guestMap: {} };
+        ordered.push(date);
+      }
+      return map[date];
+    }
+
+    function methodMatches_(method, selected) {
+      if (selected === 'all') return true;
+      return normalizeClientString_(method).toLowerCase() === normalizeClientString_(selected).toLowerCase();
+    }
+
+    function buildPaymentDays_(startText, endText, method, type) {
+      var map = {}, ordered = [];
+      if (type !== 'expense') {
+        (_dashboardCacheData.guests || []).map(cloneGuest_).forEach(function (guest) {
+          (guest.payments || []).forEach(function (payment) {
+            if (!dateTextInRange_(payment.date, startText, endText) || !methodMatches_(payment.method, method)) return;
+            var day = getOrCreatePaymentDay_(map, ordered, payment.date);
+            var key = guest.name + '|' + guest.date;
+            if (!day.guestMap[key]) {
+              day.guestMap[key] = { name: guest.name, checkoutDate: guest.date, payments: [] };
+              day.guests.push(day.guestMap[key]);
+            }
+            day.guestMap[key].payments.push(payment);
+          });
+        });
+      }
+      if (type !== 'revenue') {
+        (_dashboardCacheData.expenses || []).map(function (day) { return cloneExpenseDay_(day); }).forEach(function (day) {
+          if (!dateTextInRange_(day.date, startText, endText)) return;
+          var entries = (day.entries || []).filter(function (entry) { return methodMatches_(entry.method, method); });
+          if (!entries.length) return;
+          getOrCreatePaymentDay_(map, ordered, day.date).expenses = getOrCreatePaymentDay_(map, ordered, day.date).expenses.concat(entries);
+        });
+      }
+      ordered.sort(function (a, b) { return parseClientDateValue_(a) - parseClientDateValue_(b); });
+      return ordered.map(function (date) {
+        delete map[date].guestMap;
+        return map[date];
+      });
+    }
+
+    function buildPaySum(days) {
+      var revMethods = {}, expCats = {}, revTotal = 0, expTotal = 0;
+      (days || []).forEach(function (day) {
+        (day.guests || []).forEach(function (guest) {
+          (guest.payments || []).forEach(function (payment) {
+            var amount = amountValue_(payment.amount);
+            revTotal += amount;
+            addTotal_(revMethods, payment.method, amount);
+          });
+        });
+        (day.expenses || []).forEach(function (entry) {
+          var amount = amountValue_(entry.amount);
+          expTotal += amount;
+          addTotal_(expCats, entry.category, amount);
+        });
+      });
+      return { revMethods: objectTotalsToArray_(revMethods), expCats: objectTotalsToArray_(expCats), revTotal: revTotal, expTotal: expTotal };
+    }
+
+    function renderPaySummary(days) {
+      var summary = buildPaySum(days);
+      var showRev = _pType !== 'expense', showExp = _pType !== 'revenue';
+      var mLabel = _lastPayMethod === 'all' ? 'All Methods' : _lastPayMethod;
+      var tLabel = _lastPayType === 'all' ? 'All Types' : (_lastPayType === 'revenue' ? 'Revenue Only' : 'Expense Only');
+      var sub = mLabel + ' | ' + tLabel;
+      var bannerHtml;
+      if (showRev && showExp) {
+        bannerHtml = '<div><span class="rev-eyebrow">Revenue Payments</span><span class="rev-title">' + escapeHtml_(sub) + '</span><div class="rev-amount green" style="margin-top:12px">' + fmtAmt(summary.revTotal) + '</div></div><div style="text-align:right"><span class="rev-eyebrow" style="color:var(--exp-dark)">Expense Payments</span><div class="rev-amount red">' + fmtAmt(summary.expTotal) + '</div></div>';
+      } else if (showRev) {
+        bannerHtml = '<div><span class="rev-eyebrow">Revenue Payments</span><span class="rev-title">' + escapeHtml_(sub) + '</span></div><div class="rev-amount green">' + fmtAmt(summary.revTotal) + '</div>';
+      } else {
+        bannerHtml = '<div><span class="rev-eyebrow">Expense Payments</span><span class="rev-title">' + escapeHtml_(sub) + '</span></div><div class="rev-amount red">' + fmtAmt(summary.expTotal) + '</div>';
+      }
+      byId('p-sum').innerHTML = '<div class="rev-banner">' + bannerHtml + '</div>';
+    }
+
+    function renderPdayCard(day) {
+      var showRev = _pType !== 'expense', showExp = _pType !== 'revenue';
+      var html = '<div class="pday-card"><div class="pday-hd"><span class="pday-date">' + escapeHtml_(day.date) + '</span><div>' +
+        (showRev && day.guests.length ? '<span class="pday-badge rev">Revenue</span>' : '') +
+        (showExp && day.expenses.length ? '<span class="pday-badge exp" style="margin-left:8px">Expense</span>' : '') +
+        '</div></div>';
+      if (showRev && showExp) {
+        html += '<div class="pday-split"><div class="pday-split-col"><span class="pday-split-label rev">Revenue</span>' + renderPaymentGuests_(day.guests) + '</div><div class="pday-split-col"><span class="pday-split-label exp">Expenses</span>' + renderPaymentExpenses_(day.expenses) + '</div></div>';
+      } else if (showRev) {
+        html += '<div style="padding:16px">' + renderPaymentGuests_(day.guests) + '</div>';
+      } else {
+        html += '<div style="padding:16px">' + renderPaymentExpenses_(day.expenses) + '</div>';
+      }
+      return html + '</div>';
+    }
+
+    function renderPaymentGuests_(guests) {
+      if (!guests.length) return '<div style="font-size:14px;color:var(--muted)">No revenue payments for this date.</div>';
+      return guests.map(function (guest) {
+        var total = totalAmount_(guest.payments || []);
+        return '<div class="pday-g-block"><div class="pday-g-name">' + escapeHtml_(guest.name || '-') + '</div>' +
+          (guest.payments || []).map(function (payment) {
+            return '<div class="pday-g-line"><span class="pday-g-line-lbl">' + escapeHtml_(payment.method || '-') + '</span><span style="font-weight:700;color:var(--rev)">' + displayAmount_(payment) + '</span></div>';
+          }).join('') +
+          '<div class="pday-g-total">' + fmtAmt(total) + '</div></div>';
+      }).join('');
+    }
+
+    function renderPaymentExpenses_(expenses) {
+      if (!expenses.length) return '<div style="font-size:14px;color:var(--muted)">No expense payments for this date.</div>';
+      return expenses.map(function (entry) {
+        return '<div class="pday-g-block"><div class="pday-g-name">' + escapeHtml_(entry.name || '-') + '</div><div class="pday-g-line"><span class="pday-g-line-lbl">' + escapeHtml_(entry.category || '-') + '</span><span style="color:var(--border-strong);margin:0 6px">|</span><span class="pday-g-line-lbl">' + escapeHtml_(entry.method || '-') + '</span><span style="font-weight:700;color:var(--exp)">' + displayAmount_(entry) + '</span></div></div>';
+      }).join('');
+    }
+
+    function updatePayTableHead() {
+      var showRev = _pType !== 'expense', showExp = _pType !== 'revenue';
+      var head = '<th style="width:90px;white-space:nowrap">Date</th>';
+      if (showRev) head += '<th>Revenue Details</th>';
+      if (showExp) head += '<th>Expense Details</th>';
+      byId('p-thead-row').innerHTML = head;
+    }
+
+    function renderPdayTableRows(day) {
+      var showRev = _pType !== 'expense', showExp = _pType !== 'revenue';
+      var cols = '<td class="tbl-date-cell">' + escapeHtml_(day.date) + '</td>';
+      if (showRev) cols += '<td>' + renderPaymentGuests_(day.guests) + '</td>';
+      if (showExp) cols += '<td>' + renderPaymentExpenses_(day.expenses) + '</td>';
+      return '<tr>' + cols + '</tr>';
+    }
+
+    function pRenderList() {
+      _pPg = renderPagedPanel(_pDays, _pSz, _pPg, {
+        beforeRender: updatePayTableHead,
+        infoId: 'p-pgInfo',
+        cardsId: 'p-cards',
+        tableId: 'p-table',
+        navId: 'p-pgNav',
+        cardRenderer: renderPdayCard,
+        tableRenderer: renderPdayTableRows,
+        navPrefix: 'p'
+      });
+    }
+
+    function pRender() {
+      renderPaySummary(_pDays);
+      pRenderList();
+    }
+
+    function pPgSzChange() {
+      var v = byId('p-pgSz').value;
+      _pSz = v === 'all' ? 'all' : parseInt(v, 10);
+      _pPg = 1;
+      pRenderList();
+    }
+
+    function pGoPage(p) {
+      _pPg = p;
+      pRenderList();
+      byId('p-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function handlePaymentFetch() {
+      hideWarn('p');
+      var d = validateDates('p');
+      if (!d) return;
+      var requestToken = beginRequest_('p');
+      _lastPayMethod = byId('p-method').value;
+      _lastPayType = byId('p-type').value;
+      _pType = _lastPayType;
+      setLoad('p', true);
+      ensureDashboardCache_().then(function () {
+        if (!isLatestRequest_('p', requestToken)) return;
+        _pDays = buildPaymentDays_(d.start, d.end, _lastPayMethod, _lastPayType);
+        _pSz = 10;
+        _pPg = 1;
+        byId('p-pgSz').value = '10';
+        if (!_pDays.length) setPagedEmptyState('p', 'p-sum', 'No payment records found.');
+        else pRender();
+        byId('p-results').classList.add('show');
+        setLoad('p', false);
+      }).catch(function (err) {
+        if (!isLatestRequest_('p', requestToken)) return;
+        setLoad('p', false);
+        showWarn('p', 'Error: ' + err.message);
+      });
+    }
+
+    function buildAnalyticsFromCache_() {
+      var revenue = 0, paid = 0, expense = 0;
+      var chargeTypes = {}, revenueMethods = {}, expenseCats = {}, expenseMethods = {};
+
+      (_dashboardCacheData.guests || []).map(cloneGuest_).filter(function (guest) {
+        return dateTextInRange_(guest.date, MAY_START, MAY_END);
+      }).forEach(function (guest) {
+        (guest.charges || []).forEach(function (charge) {
+          var amount = amountValue_(charge.amount);
+          revenue += amount;
+          addTotal_(chargeTypes, charge.label, amount);
+        });
+        (guest.payments || []).forEach(function (payment) {
+          if (!dateTextInRange_(payment.date, MAY_START, MAY_END)) return;
+          var amount = amountValue_(payment.amount);
+          paid += amount;
+          addTotal_(revenueMethods, payment.method, amount);
+        });
+      });
+
+      (_dashboardCacheData.expenses || []).map(function (day) { return cloneExpenseDay_(day); }).filter(function (day) {
+        return dateTextInRange_(day.date, MAY_START, MAY_END);
+      }).forEach(function (day) {
+        (day.entries || []).forEach(function (entry) {
+          var amount = amountValue_(entry.amount);
+          expense += amount;
+          addTotal_(expenseCats, entry.category, amount);
+          addTotal_(expenseMethods, entry.method, amount);
+        });
+      });
+
+      var profit = revenue - expense;
+      return {
+        revenue: revenue,
+        paid: paid,
+        expense: expense,
+        profit: profit,
+        isProfit: profit >= 0,
+        charts: {
+          netVsExp: profit >= 0 ? [{ label: 'Net Profit', amount: profit }, { label: 'Total Expense', amount: expense }] : [{ label: 'Total Revenue', amount: revenue }, { label: 'Net Loss', amount: Math.abs(profit) }],
+          chargeTypes: objectTotalsToArray_(chargeTypes).map(chartItem_),
+          revenueMethods: objectTotalsToArray_(revenueMethods).map(chartItem_),
+          expenseCats: objectTotalsToArray_(expenseCats).map(chartItem_),
+          expenseMethods: objectTotalsToArray_(expenseMethods).map(chartItem_)
+        }
+      };
+    }
+
+    function chartItem_(item) {
+      return { label: item.label, amount: item.amt };
+    }
+
+    function doAnalyticsFetch() {
+      hideWarn('a');
+      var requestToken = beginRequest_('a');
+      setLoad('a', true);
+      ensureDashboardCache_().then(function () {
+        if (!isLatestRequest_('a', requestToken)) return;
+        var data = buildAnalyticsFromCache_();
+        renderAnalyticsKPI(data);
+        renderChartCards(data);
+        byId('a-results').classList.add('show');
+        setLoad('a', false);
+      }).catch(function (err) {
+        if (!isLatestRequest_('a', requestToken)) return;
+        setLoad('a', false);
+        showWarn('a', 'Error: ' + err.message);
+      });
+    }
+
+    function renderAnalyticsKPI(data) {
+      var isProfit = data.profit >= 0;
+      byId('a-kpi').innerHTML =
+        '<div class="a-kpi-card"><div class="a-kpi-label">Total Revenue</div><div class="a-kpi-val green">' + fmtAmt(data.revenue) + '</div></div>' +
+        '<div class="a-kpi-card"><div class="a-kpi-label">Total Expense</div><div class="a-kpi-val red">' + fmtAmt(data.expense) + '</div></div>' +
+        '<div class="a-kpi-card"><div class="a-kpi-label">' + (isProfit ? 'Profit' : 'Loss') + '</div><div class="a-kpi-val ' + (isProfit ? 'green' : 'red') + '">' + fmtAmt(Math.abs(data.profit)) + '</div><div style="margin-top:8px"><span class="a-kpi-tag ' + (isProfit ? 'profit' : 'loss') + '">' + (isProfit ? 'Profit' : 'Loss') + '</span></div></div>';
+    }
+
+    function renderChartCards(data) {
+      var charts = data.charts;
+      _chartDefs = [
+        { id: 'ac-net', title: 'Net Income vs Expense', items: charts.netVsExp, palette: data.isProfit ? ['#059669', '#dc2626'] : ['#f59e0b', '#dc2626'] },
+        { id: 'ac-charge', title: 'Revenue Charge Type', items: charts.chargeTypes, palette: REV_PALETTE },
+        { id: 'ac-rmod', title: 'Revenue Payment Method', items: charts.revenueMethods, palette: REV_PALETTE },
+        { id: 'ac-ecat', title: 'Expense Category', items: charts.expenseCats, palette: EXP_PALETTE },
+        { id: 'ac-emod', title: 'Expense Method', items: charts.expenseMethods, palette: EXP_PALETTE }
+      ];
+      byId('a-grid').innerHTML = _chartDefs.map(function (def) {
+        var total = def.items.reduce(function (sum, item) { return sum + item.amount; }, 0);
+        var rows = def.items.map(function (item, i) {
+          var pct = total > 0 ? ((item.amount / total) * 100).toFixed(1) : '0.0';
+          var color = def.palette[i % def.palette.length];
+          return '<tr><td><div class="a-name-cell"><span class="a-dot" style="background:' + color + '"></span>' + escapeHtml_(item.label) + '</div></td><td>' + fmtAmt(item.amount) + '</td><td>' + pct + '%</td></tr>';
+        }).join('');
+        var chartArea = def.items.length ? '<div class="a-chart-canvas"><div id="' + def.id + '" class="a-chart-slot"></div></div>' : '<div class="no-data" style="margin:20px;border-radius:var(--r-sm)">No data available.</div>';
+        return '<div class="a-chart-card"><div class="a-chart-hd">' + escapeHtml_(def.title) + '</div>' + chartArea + '<table class="a-tbl"><thead><tr><th>Name</th><th>Amount</th><th>%</th></tr></thead><tbody>' + rows + '</tbody><tfoot><tr><td>Total</td><td>' + fmtAmt(total) + '</td><td>' + (def.items.length ? '100%' : '0%') + '</td></tr></tfoot></table></div>';
+      }).join('');
+      if (_chartsReady) setTimeout(function () { drawAllCharts(_chartDefs); }, 150);
+      else _pendingDraw = _chartDefs;
+    }
+
+    function drawAllCharts(defs) {
+      if (!window.google || !google.visualization) return;
+      defs.forEach(function (def) {
+        if (!def.items.length) return;
+        var el = byId(def.id);
+        if (!el) return;
+        var width = el.offsetWidth || el.parentElement.offsetWidth || 320;
+        el.style.width = width + 'px';
+        el.style.height = '220px';
+        var dt = new google.visualization.DataTable();
+        dt.addColumn('string', 'Label');
+        dt.addColumn('number', 'Amount');
+        var total = def.items.reduce(function (sum, item) { return sum + amountValue_(item.amount); }, 0);
+        def.items.forEach(function (item) {
+          dt.addRow([item.label, item.amount]);
+        });
+        var chart = new google.visualization.PieChart(el);
+        chart.draw(dt, {
+          pieHole: 0.45,
+          backgroundColor: { fill: 'transparent' },
+          legend: 'none',
+          pieSliceBorderColor: 'transparent',
+          chartArea: { left: '8%', top: 12, width: '84%', height: '84%' },
+          colors: def.palette,
+          tooltip: { trigger: 'none' },
+          pieSliceText: 'none',
+          width: width,
+          height: 220
+        });
+        var tooltip = document.createElement('div');
+        tooltip.className = 'pie-center-tooltip';
+        el.appendChild(tooltip);
+        google.visualization.events.addListener(chart, 'onmouseover', function (event) {
+          if (typeof event.row !== 'number') return;
+          queuePieTooltip_(tooltip, def.items[event.row], total, def.palette[event.row % def.palette.length]);
+        });
+        google.visualization.events.addListener(chart, 'onmouseout', function () {
+          hidePieTooltip_(tooltip);
+        });
+        google.visualization.events.addListener(chart, 'select', function () {
+          var selection = chart.getSelection();
+          if (!selection.length || typeof selection[0].row !== 'number') {
+            hidePieTooltip_(tooltip, 0);
+            return;
+          }
+          showPieTooltip_(tooltip, def.items[selection[0].row], total, def.palette[selection[0].row % def.palette.length]);
+        });
+      });
+    }
+
+    function queuePieTooltip_(tooltip, item, total, color) {
+      clearTimeout(tooltip._hideTimer);
+      clearTimeout(tooltip._showTimer);
+      tooltip._showTimer = setTimeout(function () {
+        showPieTooltip_(tooltip, item, total, color);
+      }, 45);
+    }
+
+    function showPieTooltip_(tooltip, item, total, color) {
+      clearTimeout(tooltip._showTimer);
+      var percentage = total > 0 ? ((amountValue_(item.amount) / total) * 100).toFixed(1) : '0.0';
+      tooltip.innerHTML = '<span class="pie-center-tooltip-head"><span class="pie-center-tooltip-dot" style="background:' + color + '"></span><span class="pie-center-tooltip-name">' + escapeHtml_(item.label) + '</span></span><span class="pie-center-tooltip-amount" style="color:' + color + '">' + fmtAmt(item.amount) + '</span><span class="pie-center-tooltip-pct">' + percentage + '%</span>';
+      tooltip.classList.add('show');
+    }
+
+    function hidePieTooltip_(tooltip, delay) {
+      clearTimeout(tooltip._showTimer);
+      clearTimeout(tooltip._hideTimer);
+      tooltip._hideTimer = setTimeout(function () {
+        tooltip.classList.remove('show');
+      }, delay === undefined ? 160 : delay);
+    }
+
+    function openRemarksModal_(title, bodyHtml) {
+      byId('remarks-modal-title').textContent = title;
+      byId('remarks-modal-body').innerHTML = bodyHtml;
+      byId('remarks-modal').classList.add('show');
+      document.body.classList.add('modal-open');
+    }
+
+    function closeRemarksModal_() {
+      byId('remarks-modal').classList.remove('show');
+      document.body.classList.remove('modal-open');
+    }
+
+    function handleRemarksModalOverlayClick(event) {
+      if (event.target === byId('remarks-modal')) closeRemarksModal_();
+    }
+
+    function buildRemarksModalContent_(items, options) {
+      if (!items.length) return '<div class="no-data">' + escapeHtml_(options.emptyMessage) + '</div>';
+      return '<div class="tbl-wrap"><table class="data-tbl"><thead><tr>' + options.headHtml + '</tr></thead><tbody>' + items.map(options.tableRenderer).join('') + '</tbody></table></div>';
+    }
+
+    ['e-cat', 'p-method'].forEach(function (id) {
+      var element = byId(id);
+      if (!element) return;
+      element.addEventListener('focus', primeDashboardCache_);
+      element.addEventListener('pointerdown', primeDashboardCache_);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeRemarksModal_();
+    });
+
+    bindWarnReset('r', ['r-sd', 'r-ed']);
+    bindWarnReset('e', ['e-sd', 'e-ed']);
+    bindWarnReset('p', ['p-sd', 'p-ed']);
+  </script>
+</body>
+
+</html>
