@@ -2970,13 +2970,14 @@
       (_dashboardCacheData.guests || []).map(cloneGuest_).filter(function (guest) {
         return dateTextInRange_(guest.date, JUNE_START, JUNE_END);
       }).forEach(function (guest) {
+        var marriageRow = isMarriageGuest_(guest);
         (guest.charges || []).forEach(function (charge) {
           var amount = amountValue_(charge.amount);
+          var chargeLabel = marriageRow && normalizeClientString_(charge.label).toLowerCase() === 'room' ? 'Marriage' : charge.label;
           revenue += amount;
-          addTotal_(chargeTypes, charge.label, amount);
+          addTotal_(chargeTypes, chargeLabel, amount);
         });
         (guest.payments || []).forEach(function (payment) {
-          if (!dateTextInRange_(payment.date, JUNE_START, JUNE_END)) return;
           var amount = amountValue_(payment.amount);
           paid += amount;
           addTotal_(revenueMethods, payment.method, amount);
