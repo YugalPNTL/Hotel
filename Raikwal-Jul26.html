@@ -1137,7 +1137,13 @@
 
     @media(min-width:680px) {
       .a-kpi-row {
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media(min-width:900px) {
+      .a-kpi-row {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
       }
     }
 
@@ -2996,9 +3002,11 @@
       });
 
       var profit = revenue - expense;
+      var pending = Math.max(revenue - paid, 0);
       return {
         revenue: revenue,
         paid: paid,
+        pending: pending,
         expense: expense,
         profit: profit,
         isProfit: profit >= 0,
@@ -3038,6 +3046,7 @@
       var isProfit = data.profit >= 0;
       byId('a-kpi').innerHTML =
         '<div class="a-kpi-card"><div class="a-kpi-label">Total Revenue</div><div class="a-kpi-val green">' + fmtAmt(data.revenue) + '</div></div>' +
+        '<div class="a-kpi-card"><div class="a-kpi-label">Pending Amount</div><div class="a-kpi-val red">' + fmtAmt(data.pending) + '</div></div>' +
         '<div class="a-kpi-card"><div class="a-kpi-label">Total Expense</div><div class="a-kpi-val red">' + fmtAmt(data.expense) + '</div></div>' +
         '<div class="a-kpi-card"><div class="a-kpi-label">' + (isProfit ? 'Profit' : 'Loss') + '</div><div class="a-kpi-val ' + (isProfit ? 'green' : 'red') + '">' + fmtAmt(Math.abs(data.profit)) + '</div><div style="margin-top:8px"><span class="a-kpi-tag ' + (isProfit ? 'profit' : 'loss') + '">' + (isProfit ? 'Profit' : 'Loss') + '</span></div></div>';
     }
@@ -3177,4 +3186,3 @@
 </body>
 
 </html>
-
