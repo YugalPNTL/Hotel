@@ -1831,6 +1831,9 @@
     var SEPTEMBER_END = '30/09/2026';
     var DASHBOARD_CACHE_MS = 30 * 60 * 1000;
     var DASHBOARD_CACHE_KEY = 'raikwalSeptember2026DashboardCacheV1';
+    var BACKEND_TIMEOUT_MS = 40 * 1000;
+    var BACKEND_MAX_ATTEMPTS = 3;
+    var BACKEND_RETRY_DELAYS_MS = [1000, 3000];
 
     var _dashboardCacheData = null, _dashboardCacheFetchedAt = 0, _dashboardCachePromise = null;
     var _activeTab = 'revenue', _requestSeq = 0, _requestTokens = { r: 0, rr: 0, e: 0, er: 0, p: 0, a: 0 };
@@ -1864,6 +1867,25 @@
         return Promise.reject(new Error('Set APP_SCRIPT_URL before fetching data.'));
       }
 
+      var attempt = 0;
+
+      function requestWithRetry_() {
+        attempt++;
+        return callBackendOnce_(params).catch(function (error) {
+          if (attempt >= BACKEND_MAX_ATTEMPTS) throw error;
+          console.warn('Apps Script request failed. Retrying (' + attempt + '/' + BACKEND_MAX_ATTEMPTS + ').', error);
+          return wait_(BACKEND_RETRY_DELAYS_MS[attempt - 1] || BACKEND_RETRY_DELAYS_MS[BACKEND_RETRY_DELAYS_MS.length - 1])
+            .then(requestWithRetry_);
+        });
+      }
+
+      return requestWithRetry_().then(function (data) {
+        if (!data || !data.success) throw new Error((data && data.error) || 'Unable to fetch dashboard data.');
+        return data;
+      });
+    }
+
+    function callBackendOnce_(params) {
       return new Promise(function (resolve, reject) {
         var callbackName = '__gasCb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
         var script = document.createElement('script');
@@ -1871,7 +1893,7 @@
         var timer = setTimeout(function () {
           cleanup();
           reject(new Error('Request timed out while fetching data.'));
-        }, 30000);
+        }, BACKEND_TIMEOUT_MS);
 
         function cleanup() {
           if (done) return;
@@ -1898,14 +1920,15 @@
 
         script.onerror = function () {
           cleanup();
-          reject(new Error('Unable to reach Apps Script web app. Check that APP_SCRIPT_URL is the deployed /exec URL and the web app access is set to Anyone.'));
+          reject(new Error('Temporary connection problem while loading data from Apps Script.'));
         };
         script.src = url;
         document.head.appendChild(script);
-      }).then(function (data) {
-        if (!data || !data.success) throw new Error((data && data.error) || 'Unable to fetch dashboard data.');
-        return data;
       });
+    }
+
+    function wait_(ms) {
+      return new Promise(function (resolve) { setTimeout(resolve, ms); });
     }
 
     function byId(id) { return document.getElementById(id); }
