@@ -610,11 +610,18 @@
         // Per-tab state: caches fetched data so tab-switching doesn't lose it
         let tabCache = { revenue: null, expenses: null, search: null, analytics: null };
         let tabFetching = { revenue: false, expenses: false, search: false, analytics: false };
+        let dashboardData = null;
+        let dashboardDataExpiresAt = 0;
+        const DASHBOARD_CACHE_TTL_MS = 30 * 60 * 1000;
+        const DASHBOARD_CACHE_PREFIX = 'viable-dashboard-v1';
 
         // [Point 4 FIX] Track whether Google Charts is ready
         let chartsReady = false;
         google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLoadCallback(function () { chartsReady = true; });
+        google.charts.setOnLoadCallback(function () {
+            chartsReady = true;
+            if (currentTab === 'analytics' && tabCache.analytics) renderAnalytics(tabCache.analytics.analyticsData);
+        });
 
         window.addEventListener('load', function () {
             document.getElementById('payMethod').addEventListener('change', function () {
@@ -628,7 +635,7 @@
                 if (this.value === "All Categories") hint.innerHTML = "📂 <span style='color:#2980b9;'>Showing results for <b>All Categories</b>.</span>";
                 else hint.innerHTML = "🎯 <span style='color:#d35400;'>Showing results for <b>" + this.value + "</b> only.</span>";
             });
-            loadDropdownOptions();
+            restoreStoredDashboardData();
         });
 
         window.addEventListener('resize', function () {
@@ -649,6 +656,13 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btnElement.classList.add('active');
             hideAlert();
+
+            if (dashboardData && dashboardDataExpiresAt <= Date.now()) {
+                dashboardData = null;
+                dashboardDataExpiresAt = 0;
+                tabCache = { revenue: null, expenses: null, search: null, analytics: null };
+                window.lastAnalyticsData = null;
+            }
 
             let isAnalytics = (tabName === 'analytics');
             document.getElementById('dateStartBox').style.display = isAnalytics ? 'none' : 'flex';
@@ -709,6 +723,12 @@
             perPage = cached.perPage || 10;
             if (tabName === 'revenue') activeGuestFilter = cached.filter || 'all';
             document.getElementById('pageSize').value = cached.pageSizeVal || '10';
+            if (!globalData || globalData.length === 0) {
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('pagin').style.display = 'none';
+                document.getElementById('content').innerHTML = "<h3 style='text-align:center; color:#7f8c8d; margin-top:40px;'>No records found for the selected criteria.</h3>";
+                return;
+            }
             renderDashboard(cached.dashboard);
             renderUI();
         }
@@ -751,22 +771,295 @@
             if (availableValues.includes(previousValue)) select.value = previousValue;
         }
 
-        function loadDropdownOptions() {
-            requestApi(API_URL + '?action=getDropdownMethods')
-                .then(methods => populateSelect('payMethod', [
-                    { value: '', label: '-- Select Method --' },
-                    { value: 'All Payments', label: 'All Payments' }
-                ], methods))
-                .catch(error => console.warn('Unable to load payment methods:', error));
+        function getDashboardCacheKey(inputs) {
+            return `${DASHBOARD_CACHE_PREFIX}:${REPORT_PERIOD.year}-${REPORT_PERIOD.month}:${inputs.startDate}:${inputs.endDate}`;
+        }
 
-            requestApi(API_URL + '?action=getExpenseCategories')
-                .then(categories => populateSelect('expCategory', [
-                    { value: 'All Categories', label: 'All Categories' }
-                ], categories))
-                .catch(error => console.warn('Unable to load expense categories:', error));
+        function readDashboardCache(inputs) {
+            try {
+                let cached = JSON.parse(localStorage.getItem(getDashboardCacheKey(inputs)));
+                if (!cached || !cached.expiresAt || cached.expiresAt <= Date.now()) {
+                    localStorage.removeItem(getDashboardCacheKey(inputs));
+                    return null;
+                }
+                return cached;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveDashboardCache(inputs, data) {
+            let expiresAt = Date.now() + DASHBOARD_CACHE_TTL_MS;
+            try {
+                localStorage.setItem(getDashboardCacheKey(inputs), JSON.stringify({
+                    expiresAt: expiresAt,
+                    data: data
+                }));
+            } catch (error) {
+                console.warn('Unable to save dashboard cache:', error);
+            }
+            return expiresAt;
+        }
+
+        function setAllTabsFetching(isFetching) {
+            Object.keys(tabFetching).forEach(tabName => { tabFetching[tabName] = isFetching; });
+        }
+
+        function populateBatchDropdowns(data) {
+            populateSelect('payMethod', [
+                { value: '', label: '-- Select Method --' },
+                { value: 'All Payments', label: 'All Payments' }
+            ], data.methods);
+            populateSelect('expCategory', [
+                { value: 'All Categories', label: 'All Categories' }
+            ], data.categories);
+        }
+
+        function hydrateDashboardData(data, inputs, expiresAt) {
+            if (!data || !data.guests || !data.expenses || !data.analytics) {
+                throw new Error('The dashboard response is incomplete.');
+            }
+
+            dashboardData = data;
+            dashboardDataExpiresAt = expiresAt || Date.now() + DASHBOARD_CACHE_TTL_MS;
+            populateBatchDropdowns(data);
+            tabCache.revenue = {
+                data: data.guests.guests || [],
+                dashboard: data.guests.dashboard,
+                page: 1,
+                perPage: 10,
+                pageSizeVal: '10',
+                filter: 'all',
+                inputs: { startDate: inputs.startDate, endDate: inputs.endDate }
+            };
+            tabCache.expenses = {
+                data: data.expenses.expenses || [],
+                dashboard: data.expenses.dashboard,
+                page: 1,
+                perPage: 10,
+                pageSizeVal: '10',
+                filter: 'all',
+                inputs: { startDate: inputs.startDate, endDate: inputs.endDate, category: 'All Categories' }
+            };
+            tabCache.search = null;
+            tabCache.analytics = { analyticsData: data.analytics };
+        }
+
+        function restoreStoredDashboardData() {
+            let inputs = {
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value
+            };
+            let cached = readDashboardCache(inputs);
+            if (!cached) return;
+
+            try {
+                hydrateDashboardData(cached.data, inputs, cached.expiresAt);
+                restoreTabData(currentTab);
+            } catch (error) {
+                try { localStorage.removeItem(getDashboardCacheKey(inputs)); } catch (ignored) {}
+            }
+        }
+
+        function buildExpenseView(expenseResponse, selectedCategory) {
+            let targetCategory = selectedCategory ? selectedCategory.toString().toLowerCase().trim() : 'all categories';
+            let isAllCategory = targetCategory === '' || targetCategory === 'all categories';
+            let dashboard = { byCategory: {}, byMethod: {}, grandTotal: 0, filteredCategory: isAllCategory ? 'All' : selectedCategory };
+            let expenses = [];
+
+            (expenseResponse.expenses || []).forEach(record => {
+                let sets = (record.sets || []).filter(set => {
+                    return isAllCategory || (set.type || 'Other').toString().toLowerCase().trim() === targetCategory;
+                });
+                let dayTotal = sets.reduce((total, set) => total + Number(set.amt || 0), 0);
+                if (dayTotal <= 0) return;
+
+                sets.forEach(set => {
+                    let category = set.type ? set.type.toString().trim() : 'Other';
+                    let method = set.method ? set.method.toString().trim() : 'Unknown';
+                    dashboard.byCategory[category] = (dashboard.byCategory[category] || 0) + Number(set.amt || 0);
+                    dashboard.byMethod[method] = (dashboard.byMethod[method] || 0) + Number(set.amt || 0);
+                });
+                dashboard.grandTotal += dayTotal;
+                expenses.push({ date: record.date, sets: sets, dayTotal: dayTotal });
+            });
+
+            return { dashboard: dashboard, expenses: expenses };
+        }
+
+        function escapeHtml(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function paymentDateKey(displayDate) {
+            let parts = displayDate.split('/');
+            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+
+        function paymentDateEntry(dateMap, displayDate) {
+            let key = paymentDateKey(displayDate);
+            if (!dateMap[key]) {
+                dateMap[key] = { displayDate: displayDate, incomes: [], expenses: [], incTotal: 0, expTotal: 0 };
+            }
+            return dateMap[key];
+        }
+
+        function formatPaymentBreakdown(entries, includeMethod) {
+            if (!entries.length) return '&mdash;';
+            return entries.map(entry => includeMethod
+                ? `${escapeHtml(String(entry.method || '').toUpperCase())}: ${entry.amt}`
+                : entry.amt
+            ).join(' + ');
+        }
+
+        function createPaymentExpenseLine(set, includeMethod) {
+            let methodLabel = includeMethod
+                ? ` <small style="color:#3498db; font-weight:bold;">[${escapeHtml(String(set.method || '').toUpperCase())}]</small>`
+                : '';
+            return `<div style="display:flex; justify-content:space-between; margin-bottom:5px; border-bottom:1px solid #f9ecec; padding-bottom:5px;"><span>&bull; ${escapeHtml(set.item)}${methodLabel} <small style="color:#7f8c8d;">(${escapeHtml(set.type)})</small></span><b style="color:#c0392b; font-size:1.1em; margin-left:15px;">&#8377;${set.amt}</b></div>`;
+        }
+
+        function buildPaymentView(searchMethod, transactionType) {
+            let targetMethod = searchMethod ? searchMethod.toString().toLowerCase().trim() : 'all payments';
+            let isAllMethods = targetMethod === 'all payments';
+            let dateMap = {};
+            let totalReceived = 0;
+            let totalPaid = 0;
+
+            if (transactionType === 'All' || transactionType === 'Revenue') {
+                (dashboardData.guests.guests || []).forEach(guest => {
+                    let food = (guest.foodBreakdown || []).filter(entry => isAllMethods || String(entry.method).toLowerCase().trim() === targetMethod);
+                    let room = (guest.roomBreakdown || []).filter(entry => isAllMethods || String(entry.method).toLowerCase().trim() === targetMethod);
+                    let total = food.concat(room).reduce((sum, entry) => sum + Number(entry.amt || 0), 0);
+                    if (total <= 0) return;
+
+                    let entry = paymentDateEntry(dateMap, guest.date);
+                    entry.incomes.push({
+                        name: guest.name,
+                        foodStr: formatPaymentBreakdown(food, isAllMethods),
+                        roomStr: formatPaymentBreakdown(room, isAllMethods),
+                        total: total
+                    });
+                    entry.incTotal += total;
+                    totalReceived += total;
+                });
+            }
+
+            if (transactionType === 'All' || transactionType === 'Expense') {
+                (dashboardData.expenses.expenses || []).forEach(record => {
+                    (record.sets || []).forEach(set => {
+                        if (!isAllMethods && String(set.method).toLowerCase().trim() !== targetMethod) return;
+
+                        let amount = Number(set.amt || 0);
+                        if (amount <= 0) return;
+
+                        let entry = paymentDateEntry(dateMap, record.date);
+                        entry.expenses.push(createPaymentExpenseLine(set, isAllMethods));
+                        entry.expTotal += amount;
+                        totalPaid += amount;
+                    });
+                });
+            }
+
+            return {
+                records: Object.keys(dateMap).sort().map(key => dateMap[key]),
+                totalReceived: totalReceived,
+                totalPaid: totalPaid
+            };
+        }
+
+        function prepareCurrentTabCache(inputs) {
+            if (!dashboardData) return false;
+
+            if (currentTab === 'expenses') {
+                let category = document.getElementById('expCategory').value;
+                let expenseView = buildExpenseView(dashboardData.expenses, category);
+                tabCache.expenses = {
+                    data: expenseView.expenses,
+                    dashboard: expenseView.dashboard,
+                    page: 1,
+                    perPage: 10,
+                    pageSizeVal: '10',
+                    filter: 'all',
+                    inputs: { startDate: inputs.startDate, endDate: inputs.endDate, category: category }
+                };
+            }
+
+            if (currentTab === 'search') {
+                let method = document.getElementById('payMethod').value;
+                let transactionType = document.getElementById('transType').value;
+                if (!method) return false;
+
+                let paymentView = buildPaymentView(method, transactionType);
+                tabCache.search = {
+                    data: paymentView.records,
+                    dashboard: { totalReceived: paymentView.totalReceived, totalPaid: paymentView.totalPaid, method: method, tType: transactionType },
+                    page: 1,
+                    perPage: 10,
+                    pageSizeVal: '10',
+                    filter: 'all',
+                    inputs: { startDate: inputs.startDate, endDate: inputs.endDate, method: method, transType: transactionType }
+                };
+            }
+
+            return true;
         }
 
         function fetchData() {
+            let startDate = document.getElementById('startDate').value;
+            let endDate = document.getElementById('endDate').value;
+            let inputs = { startDate: startDate, endDate: endDate };
+
+            if (!startDate || !endDate) {
+                showModernAlert('Please select both From and To dates to proceed.');
+                return;
+            }
+            if (new Date(startDate) > new Date(endDate)) {
+                showModernAlert('End Date cannot be before Start Date.');
+                return;
+            }
+            if (currentTab === 'search' && !document.getElementById('payMethod').value) {
+                showModernAlert('Please select a payment method to proceed.');
+                return;
+            }
+
+            hideAlert();
+            document.getElementById('content').innerHTML = '';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('pagin').style.display = 'none';
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('fetchBtn').disabled = true;
+            document.getElementById('fetchBtn').textContent = 'Fetching...';
+            setAllTabsFetching(true);
+
+            let cached = readDashboardCache(inputs);
+            let dataPromise = cached
+                ? Promise.resolve(cached.data)
+                : requestApi(`${API_URL}?action=getDashboardData&start=${formatDateStr(startDate)}&end=${formatDateStr(endDate)}`);
+
+            dataPromise
+                .then(data => {
+                    let expiresAt = cached ? cached.expiresAt : saveDashboardCache(inputs, data);
+                    hydrateDashboardData(data, inputs, expiresAt);
+                    prepareCurrentTabCache(inputs);
+                    setAllTabsFetching(false);
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('fetchBtn').disabled = false;
+                    document.getElementById('fetchBtn').textContent = 'Fetch Data';
+                    restoreTabData(currentTab);
+                })
+                .catch(error => {
+                    setAllTabsFetching(false);
+                    handleErr(error);
+                });
+        }
+
+        function fetchLegacyData() {
             hideAlert(); document.getElementById('content').innerHTML = ''; document.getElementById('dashboard').style.display = 'none'; document.getElementById('pagin').style.display = 'none';
             document.getElementById('loader').style.display = 'block';
             let fetchBtn = document.getElementById('fetchBtn');
@@ -878,6 +1171,13 @@
             return filtered;
         }
 
+        function sortAmountEntries(dataObj) {
+            return Object.entries(dataObj || {}).sort((a, b) => {
+                let amountDifference = Number(b[1]) - Number(a[1]);
+                return amountDifference || a[0].localeCompare(b[0]);
+            });
+        }
+
         function getAnalyticsResult(data) {
             if (data.result && ['profit', 'loss', 'breakEven'].includes(data.result.type)) return data.result;
 
@@ -914,6 +1214,8 @@
         // --- ANALYTICS RENDERER ---
         function renderAnalytics(data) {
             document.getElementById('loader').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('pagin').style.display = 'none';
             window.lastAnalyticsData = data;
 
             let result = getAnalyticsResult(data);
@@ -984,7 +1286,7 @@
                 document.getElementById(elementId).innerHTML = "<p style='text-align:center; color:#95a5a6; margin-top:100px;'>No Data Yet</p>";
                 return;
             }
-            let dataArr = [['Task', 'Value'], ...Object.entries(filteredObj)];
+            let dataArr = [['Task', 'Value'], ...sortAmountEntries(filteredObj)];
             let data = google.visualization.arrayToDataTable(dataArr);
             let options = {
                 pieHole: 0.4,
@@ -1006,7 +1308,7 @@
 
         function generateAnalyticsTable(dataObj, total, label) {
             let filteredObj = filterZeros(dataObj);
-            let sortedEntries = Object.entries(filteredObj).sort((a, b) => b[1] - a[1]);
+            let sortedEntries = sortAmountEntries(filteredObj);
             let html = `<div style="overflow-x: auto;"><table class="perc-table"><tr style="background:#f8f9fa;"><th>${label}</th><th>Amount</th><th>%</th></tr>`;
             let hasData = false;
             sortedEntries.forEach(([k, v]) => {
@@ -1040,7 +1342,7 @@
                                 <div style="background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
                   <b style="color:#2c3e50; font-size:1.1em;">💳 Method-wise Total:</b>
                   <ul style="list-style-type: none; padding-left: 0; margin-top: 10px; margin-bottom: 15px;">
-                    ${Object.entries(combinedMethods).map(([m, a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.1em; color:#34495e;">${m}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
+                    ${sortAmountEntries(combinedMethods).map(([m, a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.1em; color:#34495e;">${m}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
                   </ul>
                   <div style="margin-top:auto; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.2em; color:#d35400; text-align:right;"><b>Total: ₹${Number(d.grandTotal).toLocaleString('en-IN')}</b></div>
                 </div>
@@ -1066,14 +1368,14 @@
                   <div style="background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
                     <b style="color:#2c3e50; font-size:1.1em;">📂 Expenses by Category:</b>
                     <ul style="list-style-type: none; padding-left: 0; margin-top: 10px;">
-                      ${Object.entries(d.byCategory).map(([c, a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #e67e22; font-size:1.05em; color:#34495e;">${c}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
+                      ${sortAmountEntries(d.byCategory).map(([c, a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #e67e22; font-size:1.05em; color:#34495e;">${c}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
                     </ul>
                     <div style="margin-top:10px; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.1em; color:#d35400; text-align:right;"><b>Category Total: ₹${Number(catTotal).toLocaleString('en-IN')}</b></div>
                   </div>
                   <div style="background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
                     <b style="color:#2c3e50; font-size:1.1em;">💳 Expenses by Method:</b>
                     <ul style="list-style-type: none; padding-left: 0; margin-top: 10px;">
-                      ${Object.entries(d.byMethod).map(([m, a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.05em; color:#34495e;">${m}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
+                      ${sortAmountEntries(d.byMethod).map(([m, a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.05em; color:#34495e;">${m}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
                     </ul>
                     <div style="margin-top:10px; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.1em; color:#d35400; text-align:right;"><b>Method Total: ₹${Number(methTotal).toLocaleString('en-IN')}</b></div>
                   </div>
@@ -1090,7 +1392,7 @@
                   <div style="background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
                     <b style="color:#2c3e50; font-size:1.1em;">💳 Payment Methods Used:</b>
                     <ul style="list-style-type: none; padding-left: 0; margin-top: 10px; margin-bottom: 15px;">
-                      ${Object.entries(d.byMethod).map(([m, a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.1em; color:#34495e;">${m}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
+                      ${sortAmountEntries(d.byMethod).map(([m, a]) => `<li style="margin-bottom:8px; padding-left:10px; border-left:3px solid #3498db; font-size:1.1em; color:#34495e;">${m}: <b style="float:right;">₹${Number(a).toLocaleString('en-IN')}</b></li>`).join('')}
                     </ul>
                     <div style="margin-top:auto; border-top:2px dashed #bdc3c7; padding-top:10px; font-size:1.1em; color:#d35400; text-align:right;"><b>Method Total: ₹${Number(methTotal).toLocaleString('en-IN')}</b></div>
                   </div>
